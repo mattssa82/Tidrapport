@@ -1,1236 +1,257 @@
 <!DOCTYPE html>
 <html lang="sv">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Tidrapport</title>
-
-<!-- PWA / App-ikon (lägg manifest.json och icon-512.png i samma mapp som index.html) -->
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#0e6677">
-<link rel="icon" href="icon-512.png">
-
-<!-- jsPDF för PDF (delning till mail / nedladdning) -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" referrerpolicy="no-referrer"></script>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Tidrapport – Start</title>
+<meta name="theme-color" content="#0e6677" />
+<link rel="icon" href="icon-512.png" />
+<link rel="manifest" href="manifest.json" />
 
 <style>
 :root{
-  --brand:#0e6677;--bg:#f6f7f9;--card:#fff;--text:#1f2937;--muted:#6b7280;--danger:#b91c1c;--line:#e5e7eb;--accent:#0a515f;
+  --brand:#0e6677; --bg:#f6f7f9; --card:#ffffff; --text:#1f2937; --muted:#6b7280; --line:#e5e7eb;
+  --ok:#16a34a; --warn:#b45309; --danger:#b91c1c; --accent:#0a515f;
 }
-*{box-sizing:border-box} html,body{height:100%}
-body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
-header{position:sticky;top:0;z-index:30;background:var(--brand);color:#fff;display:flex;align-items:center;gap:.75rem;padding:.85rem 1rem}
-.hamb{width:40px;height:40px;border-radius:.6rem;background:var(--accent);border:none;color:#fff;font-size:1.25rem;display:grid;place-items:center}
-h1{margin:0;font-size:1.25rem;letter-spacing:.2px}
-main{max-width:1100px;margin:0 auto;padding:1rem;display:grid;gap:1rem}
-.card{background:var(--card);border:1px solid var(--line);border-radius:.9rem;box-shadow:0 1px 2px rgba(0,0,0,.03);padding:1rem}
-.grid{display:grid;gap:.75rem}
-@media(min-width:760px){.grid{grid-template-columns:repeat(6,1fr)}}
-label{font-size:.85rem;color:var(--muted);display:block;margin-bottom:.2rem}
-input,select,textarea,button{font-size:1rem}
-input,select,textarea{width:100%;padding:.6rem .7rem;border:1px solid #cbd5e1;border-radius:.6rem;background:#fff}
-textarea{min-height:42px;resize:vertical}
-.actions{display:flex;gap:.5rem;flex-wrap:wrap}
-.btn{border:0;border-radius:.6rem;padding:.55rem .8rem;font-weight:600;cursor:pointer}
-.btn.primary{background:var(--brand);color:#fff}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0; background:var(--bg); color:var(--text); font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+header{background:var(--brand); color:#fff; padding:1rem 1.25rem}
+h1{margin:0; font-size:1.35rem; letter-spacing:.2px}
+main{max-width:980px; margin:0 auto; padding:1rem; display:grid; gap:1rem}
+.card{
+  background:var(--card); border:1px solid var(--line); border-radius:.9rem; padding:1rem;
+  box-shadow:0 1px 2px rgba(0,0,0,.04);
+}
+.section-title{display:flex; align-items:center; gap:.5rem; margin:0 0 .75rem 0; font-size:1.05rem}
+.section-title .badge{display:inline-grid; place-items:center; width:28px; height:28px; border-radius:8px; background:#eef2f7; color:#111}
+
+.list{display:grid; gap:.5rem}
+.row{display:grid; grid-template-columns:28px 1fr; gap:.6rem; align-items:start}
+.ico{
+  width:28px; height:28px; border-radius:8px; display:grid; place-items:center;
+  background:#eef2f7; color:#111; font-size:1rem; user-select:none;
+}
+.small{color:var(--muted); font-size:.92rem}
+hr.sep{border:0; border-top:1px dashed var(--line); margin:1rem 0}
+
+.callout{
+  display:flex; gap:.75rem; align-items:flex-start; border-radius:.8rem; padding:.9rem 1rem; border:1px solid;
+}
+.callout.ok{background:#ecfdf5; border-color:#bbf7d0; color:#065f46}
+.callout.warn{background:#fff7ed; border-color:#fed7aa; color:#7c2d12}
+.callout.danger{background:#fef2f2; border-color:#fecaca; color:#7f1d1d}
+.callout .ico{background:transparent; color:inherit; border:1px solid currentColor}
+
+.grid-2{display:grid; gap:1rem}
+@media(min-width:860px){.grid-2{grid-template-columns:1fr 1fr}}
+
+.btn{
+  border:0; border-radius:.8rem; padding:.9rem 1.1rem; font-weight:700; cursor:pointer; font-size:1rem;
+  display:inline-flex; gap:.5rem; align-items:center; justify-content:center;
+}
+.btn.primary{background:var(--brand); color:#fff}
 .btn.ghost{background:#eef2f7}
-.btn.danger{background:var(--danger);color:#fff}
-table{width:100%;border-collapse:collapse;font-size:.95rem}
-th,td{padding:.55rem;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
-th{font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}
-tr.warn td{background:#fff7ed}
-tr.weekend td{background:#f3f4f6}
-tr.holiday td{background:#ffeef0}
-tfoot td{background:#f0f9ff;font-weight:700}
-.small{font-size:.85rem;color:var(--muted)}
+.btn.wide{width:100%}
 
-/* Drawer (hamburgarmeny) */
-#menu{position:fixed;inset:0 0 0 auto;width:min(420px,92%);background:var(--card);border-left:1px solid var(--line);
-      transform:translateX(100%);transition:.25s ease;z-index:50;display:flex;flex-direction:column}
-#menu.open{transform:translateX(0)}
-.menu-head{padding:1rem;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
-.menu-body{padding:1rem;overflow:auto;display:grid;gap:1rem}
-.group{border:1px solid var(--line);border-radius:.8rem}
-.group summary{list-style:none;cursor:pointer;padding:.8rem 1rem;font-weight:700;background:#f8fafc;border-radius:.8rem .8rem 0 0}
-.group summary::-webkit-details-marker{display:none}
-.group .content{padding:.75rem 1rem 1rem;display:grid;gap:.65rem}
-.select{padding:.6rem .7rem;border:1px solid #cbd5e1;border-radius:.6rem;background:#fff;width:100%}
-.menu-btn{width:100%;text-align:left}
-hr.sep{border:0;border-top:1px dashed var(--line);margin:.4rem 0}
+.footer-note{font-size:.85rem; color:var(--muted); text-align:center; padding:1rem 0 1.2rem}
+kbd{
+  background:#111; color:#fff; border-radius:.35rem; padding:.08rem .4rem; font-size:.85em; font-family:ui-monospace, SFMono-Regular, Menlo, monospace;
+}
 
-/* Backupstatus-indikator */
-.status{display:inline-flex;align-items:center;gap:.45rem}
-.status .dot{width:.6rem;height:.6rem;border-radius:999px;display:inline-block}
-.status.ok .dot{background:#16a34a}
-.status.warn .dot{background:#ef4444}
-.status.info .dot{background:#6b7280}
+/* små “chips” */
+.chips{display:flex; flex-wrap:wrap; gap:.35rem}
+.chip{font-size:.85rem; padding:.15rem .5rem; border-radius:.6rem; background:#eef2f7}
 
-/* Larm-taggar */
-.pills{display:grid;gap:.25rem}
-.pill{display:inline-flex;align-items:center;gap:.4rem;font-size:.85rem;border-radius:.5rem;padding:.15rem .5rem;font-weight:600;width:max-content}
-.pill .dot{width:.55rem;height:.55rem;border-radius:999px;display:inline-block}
-.pill.red   {background:#fee2e2;color:#7f1d1d}
-.pill.orange{background:#ffedd5;color:#7c2d12}
-.pill.green {background:#dcfce7;color:#065f46}
-.pill.blue  {background:#dbeafe;color:#1e3a8a}
-.pill.rose  {background:#ffe4e6;color:#9f1239}
-
-#alarmsLegend{margin-top:.5rem}
-#alarmsLegend .legend{display:flex;flex-wrap:wrap;gap:.35rem}
-#alarmsLegend .legend .pill{cursor:default}
-
-@media print{ header,aside{display:none!important} }
+/* länkar */
+a{color:var(--accent); text-decoration:none}
+a:hover{text-decoration:underline}
 </style>
 </head>
 <body>
 <header>
-  <button class="hamb" aria-label="Meny" onclick="toggleMenu(true)">☰</button>
-  <h1>Tidrapport</h1>
+  <h1>Välkommen till Tidrapport</h1>
 </header>
 
 <main>
-  <div class="card"><strong id="monthTitle">Tidrapport</strong></div>
 
-  <div class="card">
-    <div class="grid">
-      <div><label for="datum">Datum</label><input type="date" id="datum"></div>
-      <div><label for="kategori">Kategori</label>
-        <select id="kategori">
-          <option>Ordinarie tid</option><option>Semester-tim</option><option>ATF-tim</option><option>Sjuk-tim</option>
-          <option>Föräldraledig</option><option>VAB</option><option>Flextid</option><option>Övertid &lt;2</option>
-          <option>Övertid 2&gt;</option><option>Övertid-Helg</option><option>Traktamente</option>
-        </select>
+  <!-- Hur appen funkar, rad för rad -->
+  <section class="card">
+    <div class="section-title">
+      <span class="badge">📘</span>
+      <strong>Så funkar appen – rad för rad</strong>
+    </div>
+
+    <div class="list">
+      <div class="row">
+        <div class="ico">📅</div>
+        <div><strong>Välj datum</strong><br><span class="small">Börja med att välja rätt dag i datumfältet.</span></div>
       </div>
+
+      <div class="row">
+        <div class="ico">🏷️</div>
+        <div><strong>Välj kategori</strong><br><span class="small">T.ex. <em>Ordinarie tid</em>, <em>Flextid</em>, <em>Övertid &lt;2</em>, <em>Traktamente</em> m.fl.</span></div>
+      </div>
+
+      <div class="row">
+        <div class="ico">⏱️</div>
+        <div><strong>Fyll i tid</strong><br><span class="small">Ange timmar i 0,25-steg (t.ex. <kbd>0,5</kbd> = 30 min). Minus är tillåtet vid korrigering.</span></div>
+      </div>
+
+      <div class="row">
+        <div class="ico">🚗</div>
+        <div><strong>Fyll i körtid</strong><br><span class="small">Valfritt. Också i 0,25-steg.</span></div>
+      </div>
+
+      <div class="row">
+        <div class="ico">📦</div>
+        <div><strong>Projekt</strong><br><span class="small">Bara bokstäver/siffror (inga mellanslag). Används även för summering per projekt.</span></div>
+      </div>
+
+      <div class="row">
+        <div class="ico">📝</div>
+        <div><strong>Beskrivning</strong><br><span class="small">Fri text – skriv vad du gjort.</span></div>
+      </div>
+
+      <div class="row">
+        <div class="ico">➕</div>
+        <div><strong>Klicka ”Lägg till”</strong><br><span class="small">Raden hamnar i tabellen. Du kan <em>Ändra</em> eller <em>Ta bort</em> när som helst.</span></div>
+      </div>
+
+      <div class="row">
+        <div class="ico">📊</div>
+        <div><strong>Summering & årsöversikt</strong><br><span class="small">Längst ner i tabellen ser du totalsummor. Årsöversikten visar månadssummeringar och körtid.</span></div>
+      </div>
+
+      <div class="row">
+        <div class="ico">⚠️</div>
+        <div><strong>Larm & kontroller</strong><br><span class="small">Varnar om vardagar saknar rad eller ligger under 8h. Helger/röda dagar markeras tydligt.</span></div>
+      </div>
+
+      <div class="row">
+        <div class="ico">📤</div>
+        <div><strong>Export & Dela</strong><br><span class="small">Exportera <em>Månadsrapport</em> eller <em>Årsrapport</em> (CSV). Dela även som PDF (mail / nedladdning).</span></div>
+      </div>
+
+      <div class="row">
+        <div class="ico">🗂️</div>
+        <div><strong>Import</strong><br><span class="small">Läs in CSV från tidigare export – eller återställ backup från JSON.</span></div>
+      </div>
+
+      <div class="row">
+        <div class="ico">⚙️</div>
+        <div><strong>Inställningar</strong><br><span class="small">Fyll i Företag, Namn, Anst-Nr, <em>Ägar-ID</em> (sätts i filnamn), År och ev. notering.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Lägga till på hemskärmen -->
+  <section class="card">
+    <div class="section-title">
+      <span class="badge">📲</span>
+      <strong>Lägg till på hemskärmen (App-känsla)</strong>
+    </div>
+
+    <div class="grid-2">
       <div>
-        <label for="tid">Tid</label>
-        <input id="tid" type="text" inputmode="numeric" placeholder="0,25-steg – minus tillåtet">
-        <div class="small">1=1h, 0,5=30min, 0,25=15min, -1=-1h.</div>
+        <div class="row">
+          <div class="ico">🍎</div>
+          <div>
+            <strong>iPhone / iPad (Safari)</strong>
+            <ol class="small" style="margin:.4rem 0 .2rem 1.2rem">
+              <li>Öppna sidan i <strong>Safari</strong>.</li>
+              <li>Tryck <strong>Dela</strong> (fyrkant med pil).</li>
+              <li>Välj <strong>Lägg till på hemskärmen</strong>.</li>
+              <li>Bekräfta namnet och tryck <strong>Lägg till</strong>.</li>
+            </ol>
+            <div class="chips">
+              <span class="chip">Startar helskärm</span>
+              <span class="chip">Snabbare åtkomst</span>
+            </div>
+          </div>
+        </div>
       </div>
-      <div><label for="projekt">Projekt nr</label><input id="projekt" placeholder="Bara bokstäver/siffror (inga mellanslag)"></div>
-      <div><label for="kortid">Körtid</label><input id="kortid" type="text" inputmode="numeric" placeholder="0,25-steg – minus tillåtet"></div>
-      <div><label for="beskrivning">Beskrivning</label><input id="beskrivning" placeholder="Fritext (allt tillåtet)"></div>
-    </div>
-    <div class="actions" style="margin-top:.6rem">
-      <button class="btn primary" id="btnAdd">Lägg till</button>
-      <button class="btn ghost" id="btnCancel" style="display:none">Avbryt</button>
-    </div>
-  </div>
 
-  <div class="card">
-    <table>
-      <thead><tr><th>Datum</th><th>Projekt</th><th>Kategori</th><th>Tid</th><th>Körtid</th><th>Beskrivning</th><th>Åtgärd</th></tr></thead>
-      <tbody id="rows"></tbody>
-      <tfoot><tr><td colspan="7" id="totalsCell">Summering visas här…</td></tr></tfoot>
-    </table>
-    <div class="small" id="legend" style="margin-top:.5rem">
-      <span class="pill blue"><span class="dot"></span>Helg</span>
-      <span class="pill rose"><span class="dot"></span>Röd dag</span>
-      <span class="pill orange"><span class="dot"></span>Vardag &lt; 8h</span>
-    </div>
-  </div>
-
-  <div class="card">
-    <strong>Larm & kontroller</strong>
-    <div id="alarms" class="small">Inga varningar.</div>
-    <div id="alarmsLegend" class="small">
-      <div class="legend">
-        <span class="pill red"><span class="dot"></span>Saknas</span>
-        <span class="pill orange"><span class="dot"></span>Under 8h</span>
-        <span class="pill green"><span class="dot"></span>OK</span>
-        <span class="pill blue"><span class="dot"></span>Helg</span>
-        <span class="pill rose"><span class="dot"></span>Röd dag</span>
+      <div>
+        <div class="row">
+          <div class="ico">🤖</div>
+          <div>
+            <strong>Android (Chrome)</strong>
+            <ol class="small" style="margin:.4rem 0 .2rem 1.2rem">
+              <li>Öppna sidan i <strong>Chrome</strong>.</li>
+              <li>Tryck <strong>⋮</strong> (meny) uppe till höger.</li>
+              <li>Välj <strong>Lägg till på startskärmen</strong> eller <strong>Installera app</strong>.</li>
+              <li>Bekräfta.</li>
+            </ol>
+            <div class="chips">
+              <span class="chip">Offline-stöd (begränsat)</span>
+              <span class="chip">App-ikon</span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
 
-  <div class="card">
-    <strong>Årsöversikt</strong>
-    <div id="yearLinks" style="margin:.5rem 0;"></div>
-    <div style="overflow:auto">
-      <table>
-        <thead>
-          <tr>
-            <th>Månad</th><th>Ordinarie</th><th>Semester</th><th>ATF</th><th>Sjuk</th><th>Föräldraledig</th>
-            <th>VAB</th><th>Flextid</th><th>ÖT&lt;2</th><th>ÖT2&gt;</th><th>ÖT-Helg</th><th>Trakt (st)</th><th>Körtid</th><th>Totalt</th>
-          </tr>
-        </thead>
-        <tbody id="yearBody"></tbody>
-      </table>
+    <hr class="sep">
+
+    <div class="callout warn">
+      <div class="ico">💡</div>
+      <div>
+        <strong>Tips:</strong> Om du jobbar på flera enheter – <em>läs in senaste backup</em> när du byter enhet, och <em>skapa en ny backup</em> innan du byter plattform.
+      </div>
     </div>
-  </div>
+  </section>
 
-  <div id="printRoot" style="display:none"></div>
+  <!-- Backup-information och ansvar -->
+  <section class="card">
+    <div class="section-title">
+      <span class="badge">☁️</span>
+      <strong>Backup till molnet (viktigt!)</strong>
+    </div>
+
+    <div class="list">
+      <div class="row">
+        <div class="ico">🔁</div>
+        <div><strong>Regelbunden backup</strong><br><span class="small">Använd ”Snabbbackup via Dela”/”Exportera backup (JSON)” och spara i t.ex. OneDrive, Google Drive, iCloud eller Dropbox.</span></div>
+      </div>
+
+      <div class="row">
+        <div class="ico">🆔</div>
+        <div><strong>Ägar-ID i filnamn</strong><br><span class="small">Ställ in Ägar-ID i Inställningar så märks filerna tydligt (t.ex. <em>martin_tidrapport_…</em>).</span></div>
+      </div>
+
+      <div class="row">
+        <div class="ico">📥</div>
+        <div><strong>Återläsning</strong><br><span class="small">Öppna backup-filen (JSON) via ”Import/Backup” → ”Läs in backup”.</span></div>
+      </div>
+    </div>
+
+    <hr class="sep">
+
+    <div class="callout danger">
+      <div class="ico">❗</div>
+      <div>
+        <strong>Ansvarsfriskrivning:</strong> Du ansvarar själv för att spara och hantera dina backuper på ett korrekt sätt.
+        Utvecklaren tar inget ansvar för förlust av data på grund av felhantering, enhetsproblem, nätverksfel eller liknande omständigheter utanför appens kontroll.
+      </div>
+    </div>
+  </section>
+
+  <!-- Gå vidare -->
+  <section class="card">
+    <div class="section-title">
+      <span class="badge">🚀</span>
+      <strong>Klara, färdiga, kör!</strong>
+    </div>
+    <p class="small" style="margin:.3rem 0 1rem">
+      När du är redo, öppna själva tidrapporten här nedanför. Du kan alltid återvända hit från din webbplatsstartsida.
+    </p>
+    <a href="tidrapport.html" class="btn primary wide">Öppna Tidrapport</a>
+  </section>
+
+  <div class="footer-note">
+    🔨 Byggd i samarbete med <strong>ChatGPT &amp; Martin Mattsson</strong>
+  </div>
 </main>
-
-<!-- Meny -->
-<aside id="menu" aria-hidden="true">
-  <div class="menu-head">
-    <strong>Meny</strong>
-    <button class="hamb" onclick="toggleMenu(false)" aria-label="Stäng">✕</button>
-  </div>
-  <div class="menu-body">
-    <details class="group" open>
-      <summary>Månad</summary>
-      <div class="content">
-        <select id="menuMonth" class="select"></select>
-        <button class="btn ghost menu-btn" onclick="changeMonth()">Byt månad</button>
-      </div>
-    </details>
-
-    <details class="group">
-      <summary>Inställningar</summary>
-      <div class="content">
-        <label>Företag<input id="cfgCompany"></label>
-        <label>Namn<input id="cfgName" placeholder="För- och efternamn"></label>
-        <label>Anst-Nr<input id="cfgEmp"></label>
-        <label>År<input id="cfgYear" inputmode="numeric" placeholder="t.ex. 2025"></label>
-        <label>Extra notering (syns i export)<textarea id="cfgNote"></textarea></label>
-
-        <!-- Auto-backup -->
-        <label style="display:flex;gap:.5rem;align-items:center">
-          <input type="checkbox" id="cfgAutoBackup"> Automatisk backup till vald fil/mapp
-        </label>
-        <div class="actions">
-          <button class="btn ghost" onclick="pickBackupFolder()">Välj backup-mapp (rekommenderas)</button>
-          <button class="btn ghost" onclick="pickBackupFile()">Välj/ändra backup-fil (avancerat)</button>
-          <button class="btn ghost" id="btnQuickBackup" style="display:none" onclick="quickBackup()">Snabb-backup (iOS)</button>
-        </div>
-        <div class="small" style="margin:.5rem 0;line-height:1.4">
-          💡 Välj en <em>mapp</em> i t.ex. OneDrive/Google Drive. Då sparas en fil per månad automatiskt
-          (<code>tidrapport_backup_ÅÅÅÅ_MM.json</code>). Väljer du specifik fil skrivs bara den över.
-        </div>
-
-        <div class="small status info" id="backupStatus" aria-live="polite">
-          <span class="dot" aria-hidden="true"></span>
-          <span class="text">Backup: ej konfigurerad</span>
-        </div>
-
-        <div class="actions" style="margin-top:.5rem">
-          <button class="btn ghost" onclick="saveSettings()">Spara</button>
-          <button class="btn danger" onclick="resetSettings()">Rensa inställningar</button>
-          <button class="btn danger" onclick="resetAll()">Rensa all data</button>
-        </div>
-      </div>
-    </details>
-
-    <details class="group" open>
-      <summary>Exportera</summary>
-      <div class="content">
-        <button class="btn ghost menu-btn" onclick="exportMonthReport()">Export Månadsrapport (CSV)</button>
-        <button class="btn ghost menu-btn" onclick="exportExcelStyleMonth()">Export Excel-stil – månad</button>
-        <button class="btn ghost menu-btn" onclick="exportYearReportCombined()">Export Årsrapport (CSV)</button>
-      </div>
-    </details>
-
-    <details class="group">
-      <summary>Dela</summary>
-      <div class="content">
-        <button class="btn ghost menu-btn" onclick="shareMonthReport()">Dela – Månadsrapport (CSV)</button>
-        <button class="btn ghost menu-btn" onclick="shareYearReport()">Dela – Årsrapport (CSV)</button>
-        <hr class="sep">
-        <button class="btn ghost menu-btn" onclick="shareMonthPdfEmail()">Dela som PDF – Månadsrapport (mail)</button>
-        <button class="btn ghost menu-btn" onclick="shareYearPdfEmail()">Dela som PDF – Årsrapport (mail)</button>
-        <hr class="sep">
-        <button class="btn ghost menu-btn" onclick="createEmlDraft()">Skapa e-postutkast (.eml)</button>
-      </div>
-    </details>
-
-    <details class="group">
-      <summary>Import/Backup</summary>
-      <div class="content">
-        <div class="small">CSV: första rad <code>sep=;</code> + rubriker.</div>
-        <input type="file" id="fileImport" accept=".csv" onchange="importCSV(event)">
-        <div class="small" style="margin-top:.5rem">Backup JSON:</div>
-        <button class="btn ghost menu-btn" onclick="exportJSON()">Säkerhetskopia (JSON)</button>
-        <input type="file" id="fileJson" accept="application/json" onchange="importJSON(event)">
-        <button class="btn ghost menu-btn" onclick="shareJSON()">Dela (mobil) – JSON</button>
-        <button class="btn ghost menu-btn" onclick="restoreBackupNow()">Återställ från backup nu</button>
-        <button class="btn ghost menu-btn" onclick="testBackupNow()">Testa backup nu</button>
-
-        <div class="small" style="margin-top:.5rem;line-height:1.4">
-          💡 Du behöver inte logga in här. Välj bara en fil/mapp i en molnmapp – deras app sköter synken.
-        </div>
-      </div>
-    </details>
-
-    <div class="small" style="text-align:center">
-      <hr class="sep">
-      🔨 Tillverkad i samarbete med <strong>ChatGPT & Martin Mattsson</strong>
-    </div>
-  </div>
-</aside>
-
-<script>
-(()=>{
-// ===== Utils & konstanter =====
-const monthsSv=["januari","februari","mars","april","maj","juni","juli","augusti","september","oktober","november","december"];
-const catKeys=["Ordinarie tid","Semester-tim","ATF-tim","Sjuk-tim","Föräldraledig","VAB","Flextid","Övertid <2","Övertid 2>","Övertid-Helg","Traktamente"];
-const csvCols=["Datum","Ordinarie tid","Körtid","Projekt nr","Semester-tim","ATF-tim","Sjuk-tim","Föräldraledig","VAB","Flextid","Övertid <2","Övertid 2>","Övertid-Helg","Traktamente","Beskrivning"];
-const STORAGE="tidrapport_data_v9";
-const SETTINGS="tidrapport_settings_v9";
-const IDB_NAME="tidrapport_backup_db"; const IDB_STORE="handles";
-const $=id=>document.getElementById(id);
-const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
-const fmt=n=>(Math.round((Number(n)||0)*100)/100).toString().replace(".",",");
-
-const isiOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-
-// ===== State =====
-let state={month:(new Date().getMonth()+1), data:load(STORAGE,{}), settings:load(SETTINGS,defSettings())};
-function defSettings(){return{company:"",name:"",emp:"",year:new Date().getFullYear(),note:"",autoBackup:true,holidays:true}}
-function load(k,def){try{const v=JSON.parse(localStorage.getItem(k));return v??def}catch(_){return def}}
-function save(){ localStorage.setItem(STORAGE,JSON.stringify(state.data)); touchLocalUpdated(); markBackupDirty(); }
-function saveCfg(){ localStorage.setItem(SETTINGS,JSON.stringify(state.settings)); touchLocalUpdated(); markBackupDirty(); }
-function ensureMonth(m){if(!state.data[m]) state.data[m]=[]}
-const escapeHtml=s=>(s||"").replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-
-// ===== Meny =====
-window.toggleMenu=(open)=>{const el=$("menu"); if(!el) return; el.classList.toggle("open",open); if(open) initMenu();}
-function initMenu(){
-  const sel=$("menuMonth"); if(sel){ sel.innerHTML=""; monthsSv.forEach((n,i)=>{const o=document.createElement("option");o.value=i+1;o.textContent=cap(n); if(i+1===state.month) o.selected=true; sel.appendChild(o);});}
-  $("cfgCompany").value=state.settings.company||"";
-  $("cfgName").value=state.settings.name||"";
-  $("cfgEmp").value=state.settings.emp||"";
-  $("cfgYear").value=state.settings.year||"";
-  $("cfgNote").value=state.settings.note||"";
-  $("cfgAutoBackup").checked=!!state.settings.autoBackup;
-  updateBackupStatus();
-}
-window.changeMonth=()=>{state.month=Number($("menuMonth").value); renderAll(); toggleMenu(false)}
-
-// ===== Settings =====
-window.saveSettings=()=>{
-  state.settings.company=$("cfgCompany").value;
-  state.settings.name=$("cfgName").value;
-  state.settings.emp=$("cfgEmp").value;
-  state.settings.year=Number($("cfgYear").value)||new Date().getFullYear();
-  state.settings.note=$("cfgNote").value;
-  state.settings.autoBackup=$("cfgAutoBackup").checked;
-  saveCfg(); renderAll();
-  if(state.settings.autoBackup) ensureBackupTarget();
-};
-window.resetSettings=()=>{
-  if (!confirm("Rensa inställningar?\n\nDetta tar bort Företag, Namn, Anst-Nr, År och Notering.\nDina inmatade rader påverkas inte.")) return;
-  state.settings = defSettings();
-  saveCfg(); initMenu(); renderAll();
-  alert("Inställningarna är rensade.");
-};
-
-// ===== Ny “Rensa all data” — behåll gamla backuper, börja ny =====
-async function detachBackup(){
-  try{
-    backupHandle = null;
-    backupDirHandle = null;
-    await idbDel("backupHandle");
-    await idbDel("backupDirHandle");
-  }catch(_){}
-  updateBackupStatus("frånkopplad – välj ny fil eller mapp");
-}
-window.resetAll = async ()=>{
-  const input = prompt(
-    "⚠️ DU ÄR PÅ VÄG ATT RADERA ALL DATA.\n\n" +
-    "Detta går inte att ångra.\n\n" +
-    "Skriv: RADERA ALLT för att bekräfta."
-  );
-  if (input !== "RADERA ALLT") return;
-
-  // 1) Pre-reset-säkerhetskopia (nedladdning)
-  try{
-    const ts = new Date();
-    const stamp = ts.getFullYear().toString() +
-                  String(ts.getMonth()+1).padStart(2,"0") +
-                  String(ts.getDate()).padStart(2,"0") + "_" +
-                  String(ts.getHours()).padStart(2,"0") +
-                  String(ts.getMinutes()).padStart(2,"0") +
-                  String(ts.getSeconds()).padStart(2,"0");
-    const preBlob = new Blob([JSON.stringify({
-      version:"v9",
-      updatedAt: Date.now(),
-      settings: state.settings,
-      data: state.data
-    }, null, 2)], {type:"application/json"});
-    dl(`tidrapport_pre_reset_${stamp}.json`, preBlob);
-  }catch(_){}
-
-  // 2) Koppla bort backup – börja på ny
-  await detachBackup();
-
-  // 3) Rensa allt utan autospar under körning
-  const _save = save, _saveCfg = saveCfg;
-  function saveNoBackup(){ localStorage.setItem(STORAGE, JSON.stringify(state.data)); touchLocalUpdated(); }
-  function saveCfgNoBackup(){ localStorage.setItem(SETTINGS, JSON.stringify(state.settings)); touchLocalUpdated(); }
-  window.save = saveNoBackup; window.saveCfg = saveCfgNoBackup;
-
-  state.data = {}; for (let m=1; m<=12; m++) ensureMonth(m);
-  save(); renderAll();
-
-  window.save = _save; window.saveCfg = _saveCfg;
-
-  // 4) Erbjud ny backup-plats
-  const pickNow = confirm(
-    "All data rensad.\n\nVill du välja en NY backup-mapp eller fil nu?\n(Rekommenderas: mapp i OneDrive/Google Drive)."
-  );
-  if (pickNow){
-    if ("showDirectoryPicker" in window){
-      try{ await pickBackupFolder(); }catch(_){}
-    } else if ("showSaveFilePicker" in window){
-      try{ await pickBackupFile(); }catch(_){}
-    } else {
-      alert("Din webbläsare kan inte välja plats. Använd 'Snabb-backup' eller 'Säkerhetskopia (JSON)'.");
-    }
-  } else {
-    updateBackupStatus("frånkopplad – välj ny fil eller mapp när du vill");
-  }
-};
-
-// ===== Input helpers =====
-function normMinus(s){return (s||"").replace(/[–—−]/g,"-")}
-function toNumRaw(s){ if(s==null) return NaN; s=normMinus((""+s).replace(/\s+/g,"")).replace(",","."); if(!/^[-]?\d*(\.\d+)?$/.test(s)) return NaN; return s===""?NaN:parseFloat(s); }
-function roundQuarter(n){return Math.round(n*4)/4}
-function parseHourInput(v,allowEmpty=false){ if(allowEmpty && (v===""||v==null)) return 0; const n=toNumRaw(v); if(isNaN(n)) return NaN; return roundQuarter(n); }
-function sanitizeProject(s){ s=(s||"").normalize("NFC").replace(/\s+/g,""); s=s.replace(/[^0-9A-Za-zÅÄÖåäö]/g,""); return s; }
-
-// ===== Add/Edit/Delete =====
-const btnAdd=$("btnAdd"); const btnCancel=$("btnCancel");
-btnAdd.addEventListener("click", () => {
-  const d=$("datum").value; if(!d){ alert("Välj datum."); return; }
-  const k=$("kategori").value;
-  const t=parseHourInput($("tid").value); if(isNaN(t)){ alert("Ogiltig Tid."); return; }
-  const p=sanitizeProject($("projekt").value);
-  const kt=parseHourInput($("kortid").value,true); if(isNaN(kt)){ alert("Ogiltig Körtid."); return; }
-  const b=$("beskrivning").value||"";
-  const m=(new Date(d)).getMonth()+1; ensureMonth(m);
-
-  if (editing){
-    const list=state.data[editing.month]||[]; const idx=list.findIndex(r=>r._id===editing.id);
-    if(idx!==-1){
-      list[idx]={...list[idx], datum:d,kategori:k,tid:t,projekt:p,kortid:kt,beskrivning:b};
-      if (editing.month!==m){ const row=list.splice(idx,1)[0]; ensureMonth(m); state.data[m].push(row); state.month=m; }
-      save();
-    }else{ state.data[m].push({_id:uid(), datum:d,kategori:k,tid:t,projekt:p,kortid:kt,beskrivning:b}); save(); }
-    exitEditMode(); renderAll();
-  } else {
-    state.data[m].push({_id:uid(), datum:d,kategori:k,tid:t,projekt:p,kortid:kt,beskrivning:b});
-    save(); clearInputs(); state.month=m; renderAll();
-  }
-});
-btnCancel.addEventListener("click", ()=>{ exitEditMode(); clearInputs(); });
-function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,8); }
-let editing=null;
-function enterEditMode(row, month){ editing={id:row._id, month}; btnAdd.textContent="Spara"; btnCancel.style.display=""; }
-function exitEditMode(){ editing=null; btnAdd.textContent="Lägg till"; btnCancel.style.display="none"; }
-function clearInputs(){["datum","tid","projekt","kortid","beskrivning"].forEach(id=>$(id).value=""); $("kategori").selectedIndex=0;}
-
-// ===== Helg & röda dagar (Sverige) =====
-function easterSunday(y){const a=y%19,b=Math.floor(y/100),c=y%100,d=Math.floor(b/4),e=b%4,f=Math.floor((b+8)/25),g=Math.floor((b-f+1)/3),h=(19*a+b-d-g+15)%30,i=Math.floor(c/4),k=c%4,l=(32+2*e+2*i-h-k)%7,m=Math.floor((a+11*h+22*l)/451),n=h+l-7*m+114;return new Date(y,Math.floor(n/31)-1,(n%31)+1)}
-function addDays(date,days){const d=new Date(date); d.setDate(d.getDate()+days); return d}
-function swedishHolidays(y){
-  const H=new Map(); const add=(d, name)=>H.set(d.toISOString().slice(0,10),name);
-  add(new Date(y,0,1),"Nyårsdagen"); add(new Date(y,0,6),"Trettondedag jul"); add(new Date(y,4,1),"Första maj");
-  add(new Date(y,5,6),"Sveriges nationaldag"); add(new Date(y,11,25),"Juldagen"); add(new Date(y,11,26),"Annandag jul");
-  const eas=easterSunday(y); add(addDays(eas,-2),"Långfredagen"); add(addDays(eas,1),"Annandag påsk"); add(addDays(eas,39),"Kristi himmelsfärdsdag");
-  let mid=new Date(y,5,20); while(mid.getDay()!=6) mid=addDays(mid,1); add(mid,"Midsommardagen");
-  let saints=new Date(y,9,31); while(saints.getDay()!=6) saints=addDays(saints,1); add(saints,"Alla helgons dag");
-  return H;
-}
-
-// ===== Render =====
-function calcMonthTotals(m){
-  ensureMonth(m); const res={_kortid:0,"Traktamente":0};
-  state.data[m].forEach(r=>{
-    res[r.kategori]=(res[r.kategori]||0)+Number(r.tid||0);
-    res._kortid+=Number(r.kortid||0);
-  });
-  return res;
-}
-function renderTable(){
-  const m=state.month; ensureMonth(m); const y=state.settings.year;
-  $("monthTitle").textContent=`Tidrapport för ${cap(monthsSv[m-1])} ${y}`;
-  const tb=$("rows"); tb.innerHTML="";
-  const rows=[...state.data[m]].sort((a,b)=>a.datum.localeCompare(b.datum));
-  const daySum={}; rows.forEach(r=>{daySum[r.datum]=(daySum[r.datum]||0)+Number(r.tid||0)});
-  const H= state.settings.holidays!==false ? swedishHolidays(y) : new Map();
-
-  rows.forEach((r,i)=>{
-    const tr=document.createElement("tr");
-    const d=new Date(r.datum); const dow=d.getDay(); const iso=r.datum;
-    const isWeekend=(dow===0||dow===6); const isHoliday= H.has(iso);
-    if(isWeekend) tr.classList.add("weekend");
-    if(isHoliday) tr.classList.add("holiday");
-    if(!isWeekend && !isHoliday && (daySum[r.datum]||0)<8) tr.classList.add("warn");
-    const hname=isHoliday?` <span class="pill rose"><span class="dot"></span>${H.get(iso)}</span>`:"";
-    tr.innerHTML=`<td>${r.datum}${hname}</td><td>${escapeHtml(r.projekt||"")}</td><td>${r.kategori}</td>
-      <td>${fmt(r.tid)}</td><td>${fmt(r.kortid)}</td><td>${escapeHtml(r.beskrivning||"")}</td>
-      <td class="actions"><button class="btn ghost" onclick="APP.edit(${m},${i})">Ändra</button>
-      <button class="btn danger" onclick="APP.del(${m},${i})">Ta bort</button></td>`;
-    tb.appendChild(tr);
-  });
-
-  const t=calcMonthTotals(m);
-  $("totalsCell").textContent=
-    `Summering — Ordinarie: ${fmt(t["Ordinarie tid"]||0)} | Semester: ${fmt(t["Semester-tim"]||0)} | ATF: ${fmt(t["ATF-tim"]||0)} | `+
-    `Sjuk: ${fmt(t["Sjuk-tim"]||0)} | Föräldraledig: ${fmt(t["Föräldraledig"]||0)} | VAB: ${fmt(t["VAB"]||0)} | Flextid: ${fmt(t["Flextid"]||0)} | `+
-    `ÖT<2: ${fmt(t["Övertid <2"]||0)} | ÖT2>: ${fmt(t["Övertid 2>"]||0)} | ÖT-Helg: ${fmt(t["Övertid-Helg"]||0)} | Traktamente (st): ${fmt(t["Traktamente"]||0)} | `+
-    `Körtid: ${fmt(t._kortid||0)}`;
-
-  renderYear(); renderAlarms(); initMenu();
-}
-function renderYear(){
-  const tb=$("yearBody"); tb.innerHTML="";
-  for(let m=1;m<=12;m++){
-    const t=calcMonthTotals(m);
-    const tot=catKeys.reduce((a,k)=>a+(t[k]||0),0);
-    const tr=document.createElement("tr");
-    tr.innerHTML=`<td>${cap(monthsSv[m-1])}</td>
-      <td>${fmt(t["Ordinarie tid"]||0)}</td><td>${fmt(t["Semester-tim"]||0)}</td><td>${fmt(t["ATF-tim"]||0)}</td>
-      <td>${fmt(t["Sjuk-tim"]||0)}</td><td>${fmt(t["Föräldraledig"]||0)}</td><td>${fmt(t["VAB"]||0)}</td><td>${fmt(t["Flextid"]||0)}</td>
-      <td>${fmt(t["Övertid <2"]||0)}</td><td>${fmt(t["Övertid 2>"]||0)}</td><td>${fmt(t["Övertid-Helg"]||0)}</td>
-      <td>${fmt(t["Traktamente"]||0)}</td><td>${fmt(t._kortid||0)}</td><td>${fmt(tot)}</td>`;
-    tb.appendChild(tr);
-  }
-  const yl=$("yearLinks"); yl.innerHTML="";
-  monthsSv.forEach((n,i)=>{const b=document.createElement("button"); b.className="btn ghost"; b.style.marginRight=".4rem";
-    b.textContent=cap(n); b.onclick=()=>{state.month=i+1; renderAll(); scrollTo({top:0,behavior:"smooth"});}; yl.appendChild(b);});
-}
-function renderAlarms(){
-  const m=state.month; ensureMonth(m);
-  const y=state.settings.year||new Date().getFullYear();
-  const H = state.settings.holidays!==false ? swedishHolidays(y) : new Map();
-
-  const map={};
-  (state.data[m]||[]).forEach(r=>{ const d=r.datum; map[d]=(map[d]||0)+Number(r.tid||0); });
-
-  const last=new Date(y,m,0).getDate();
-  const lines=[];
-  for(let d=1; d<=last; d++){
-    const iso=`${y}-${String(m).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
-    const dow=new Date(iso).getDay();
-    const isWeekend=(dow===0||dow===6);
-    const isHoliday=H.has(iso);
-    const sum=map[iso]||0;
-
-    let cls="", label="";
-    if(isHoliday){ cls="rose"; label=`Röd dag (${H.get(iso)})`; }
-    else if(isWeekend){ cls="blue"; label="Helg"; }
-    else if(map[iso]==null){ cls="red"; label="Saknas"; }
-    else if(sum<8){ cls="orange"; label=`Under 8h (${fmt(sum)}h)`; }
-    else { cls="green"; label=`OK (${fmt(sum)}h)`; }
-
-    const extra = (isWeekend||isHoliday) ? (sum>0 ? ` — ${fmt(sum)}h registrerat` : "") : "";
-    lines.push(`<div class="pill ${cls}"><span class="dot"></span><span>${iso} — ${label}${extra}</span></div>`);
-  }
-
-  $("alarms").innerHTML = lines.length ? `<div class="pills">${lines.join("")}</div>` : "Inga varningar för denna månad.";
-}
-function renderAll(){renderTable()}
-
-// ===== CSV helpers (kombinerad export) =====
-const FILL_ZERO=false;
-const csvEscape=s=>{s=s==null?"":String(s).replace(/\r?\n/g," "); if(/[";]/.test(s)) s='"'+s.replace(/"/g,'""')+'"'; return s;}
-function csvHeaderRow(){return csvCols.join(";")}
-function sortedRows(months){
-  const out=[]; months.forEach(m=>{ensureMonth(m); state.data[m].forEach(r=>out.push({...r,_m:m}))});
-  out.sort((a,b)=>{const c=a.datum.localeCompare(b.datum); if(c) return c; const p=(a.projekt||"").localeCompare(b.projekt||""); if(p) return p; return (a.kategori||"").localeCompare(b.kategori||"");});
-  return out;
-}
-function headerInfo(scope){
-  const y=state.settings.year, m=state.month;
-  const parts=["sep=;","Tidrapport;;;;",`Företag;${state.settings.company||""};;;;`,`Namn;${state.settings.name||""};;;;`,`Anst-Nr;${state.settings.emp||""};;;;`,`År;${y};;;;`];
-  if(scope==="month") parts.push(`Månad;${cap(monthsSv[m-1])};;;;`);
-  if(state.settings.note && state.settings.note.trim()) parts.push(`Notering;${state.settings.note.replace(/\r?\n/g," ")}`);
-  parts.push(""); return parts.join("\r\n");
-}
-function buildRowsSection(scope){
-  const months = scope==="year" ? Array.from({length:12},(_,i)=>i+1) : [state.month];
-  const lines=[`### RADER (${scope==="year"?"år":"månad"})`, csvHeaderRow()];
-  sortedRows(months).forEach(r=>{
-    const cat=r.kategori||"";
-    const val=want=> (cat===want ? fmt(r.tid) : (FILL_ZERO ? "0" : ""));
-    const row=[r.datum,val("Ordinarie tid"),fmt(r.kortid||0),csvEscape(r.projekt||""),val("Semester-tim"),val("ATF-tim"),val("Sjuk-tim"),val("Föräldraledig"),val("VAB"),val("Flextid"),val("Övertid <2"),val("Övertid 2>"),val("Övertid-Helg"),val("Traktamente"),csvEscape(r.beskrivning||"")];
-    lines.push(row.join(";"));
-  });
-  lines.push(""); return lines.join("\r\n");
-}
-function groupByProject(months){
-  const map={};
-  months.forEach(m=>{ensureMonth(m); state.data[m].forEach(r=>{const key=r.projekt||"(tomt)"; const cat=r.kategori||""; map[key]??={_kortid:0}; map[key]._kortid+=Number(r.kortid||0); map[key][cat]=(map[key][cat]||0)+Number(r.tid||0);});});
-  return map;
-}
-function buildProjectSection(scope){
-  const months = scope==="year" ? Array.from({length:12},(_,i)=>i+1) : [state.month];
-  const y=state.settings.year, m=String(state.month).padStart(2,"0");
-  const lines=[`### SUMMERING PER PROJEKT (${scope==="year"?"år":"månad"})`, csvHeaderRow()];
-  const g=groupByProject(months);
-  Object.keys(g).sort().forEach(p=>{
-    const o=g[p]; const datum=scope==="year" ? `${y}-01-01` : `${y}-${m}-01`;
-    const row=[datum, fmt(o["Ordinarie tid"]||0), fmt(o._kortid||0), csvEscape(p), fmt(o["Semester-tim"]||0),fmt(o["ATF-tim"]||0),fmt(o["Sjuk-tim"]||0),fmt(o["Föräldraledig"]||0),fmt(o["VAB"]||0),fmt(o["Flextid"]||0),fmt(o["Övertid <2"]||0),fmt(o["Övertid 2>"]||0),fmt(o["Övertid-Helg"]||0),fmt(o["Traktamente"]||0),"Summerat per projekt"];
-    lines.push(row.join(";"));
-  });
-  return lines.join("\r\n");
-}
-function buildCombinedCsv(scope){ return headerInfo(scope) + buildRowsSection(scope) + buildProjectSection(scope); }
-
-// ----- Blob helpers -----
-function makeBlobCSV(text, encoding){
-  if(encoding==='utf8'){ const BOM=new Uint8Array([0xEF,0xBB,0xBF]); return new Blob([BOM, text.normalize("NFC")], {type:"text/csv;charset=utf-8"}); }
-  const s=(text||"").normalize("NFC"); const bom=new Uint8Array([0xFF,0xFE]); const buf=new Uint8Array(bom.length + s.length*2);
-  bom.forEach((b,i)=>buf[i]=b); for(let i=0;i<s.length;i++){const code=s.charCodeAt(i); buf[bom.length+i*2]=code&0xFF; buf[bom.length+i*2+1]=(code>>8)&0xFF;}
-  return new Blob([buf],{type:"text/csv;charset=utf-16le"});
-}
-function dl(name,blob){const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=name; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1500)}
-
-// ===== Export / Dela (CSV) =====
-window.exportMonthReport=()=>{ const text=buildCombinedCsv("month"); const y=state.settings.year, m=String(state.month).padStart(2,"0"); dl(`tidrapport_${y}_${m}_manadsrapport.csv`, makeBlobCSV(text,'utf16')); };
-window.exportYearReportCombined=()=>{ const text=buildCombinedCsv("year"); const y=state.settings.year; dl(`tidrapport_${y}_arsrapport.csv`, makeBlobCSV(text,'utf16')); };
-
-async function tryShareOrDownload(filename, blob, title){
-  if (navigator.canShare && navigator.canShare({files:[new File([blob], filename, {type: blob.type})]})) {
-    try {
-      const file = new File([blob], filename, {type: blob.type});
-      await navigator.share({title, files:[file]});
-      return true;
-    } catch (e) {}
-  }
-  dl(filename, blob);
-  alert("Delning stöds inte här – filen laddades ner istället.");
-  return false;
-}
-window.shareMonthReport=async()=>{ const text=buildCombinedCsv("month"); const y=state.settings.year, m=String(state.month).padStart(2,"0"); await tryShareOrDownload(`Tidrapport_${y}_${m}_manadsrapport.csv`, makeBlobCSV(text,'utf8'), "Tidrapport – Månadsrapport"); };
-window.shareYearReport=async()=>{ const text=buildCombinedCsv("year"); const y=state.settings.year; await tryShareOrDownload(`Tidrapport_${y}_arsrapport.csv`, makeBlobCSV(text,'utf8'), "Tidrapport – Årsrapport"); };
-
-// ===== PDF (jsPDF) =====
-function makePdfReport(scope){ // -> Blob
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF({unit:"pt", format:"a4"});
-  const pageW = doc.internal.pageSize.getWidth();
-  const pageH = doc.internal.pageSize.getHeight();
-  const margin = 40;
-  const lineH = 14;
-  const mono = "Courier";
-
-  const yStart = margin + 8;
-  let y = yStart;
-  const yNewPage = () => { doc.addPage(); y = yStart; };
-
-  const write = (txt) => {
-    const lines = doc.splitTextToSize(txt, pageW - margin*2);
-    lines.forEach(line=>{
-      if (y > pageH - margin) yNewPage();
-      doc.text(line, margin, y); y += lineH;
-    });
-  };
-  const rule = () => { if (y > pageH - margin) yNewPage(); doc.setDrawColor(180); doc.line(margin, y, pageW-margin, y); y += 8; };
-
-  const ySel = state.settings.year;
-  const mIdx = state.month-1;
-  const title = scope==="year" ? `Årsrapport ${ySel}` : `Månadsrapport ${cap(monthsSv[mIdx])} ${ySel}`;
-  const meta = [
-    `Företag: ${state.settings.company||"-"}`,
-    `Namn: ${state.settings.name||"-"}   Anst-Nr: ${state.settings.emp||"-"}`,
-    `Notering: ${state.settings.note ? state.settings.note.replace(/\r?\n/g," ") : "-"}`,
-  ];
-
-  doc.setFont(mono, "bold"); doc.setFontSize(14);
-  write(`Tidrapport – ${title}`);
-  doc.setFont(mono, "normal"); doc.setFontSize(10);
-  meta.forEach(m=>write(m));
-  rule();
-
-  // Sektion 1: Rader
-  doc.setFont(mono,"bold"); write(`RADER (${scope==="year"?"år":"månad"})`);
-  doc.setFont(mono,"normal");
-
-  const cols = [
-    { k:"Datum", w:90 },
-    { k:"Ord", w:50 },
-    { k:"Kört", w:50 },
-    { k:"Projekt", w:110 },
-    { k:"Sem", w:40 },
-    { k:"ATF", w:40 },
-    { k:"Sjuk", w:45 },
-    { k:"Föräld", w:55 },
-    { k:"VAB", w:40 },
-    { k:"Flex", w:45 },
-    { k:"ÖT<2", w:45 },
-    { k:"ÖT2>", w:45 },
-    { k:"Helg", w:45 },
-    { k:"Trakt", w:45 },
-  ];
-  const months = scope==="year" ? Array.from({length:12},(_,i)=>i+1) : [state.month];
-  const rows = sortedRows(months).map(r=>{
-    const cat = r.kategori||"";
-    const val = want => (cat===want ? fmt(r.tid) : "");
-    return [
-      r.datum,
-      val("Ordinarie tid"),
-      fmt(r.kortid||0),
-      (r.projekt||""),
-      val("Semester-tim"), val("ATF-tim"), val("Sjuk-tim"), val("Föräldraledig"),
-      val("VAB"), val("Flextid"), val("Övertid <2"), val("Övertid 2>"),
-      val("Övertid-Helg"), val("Traktamente")
-    ];
-  });
-
-  const headerLine = cols.map(c=>c.k.padEnd(Math.floor(c.w/7))).join("");
-  doc.setFont(mono,"bold"); write(headerLine); doc.setFont(mono,"normal");
-  rule();
-
-  rows.forEach(r=>{
-    const wrappedColumns = r.map((cell, i)=>{
-      const widthPx = cols[i].w;
-      const chars = Math.max(1, Math.floor(widthPx/7));
-      const chunks=[];
-      const s=String(cell||"");
-      for(let idx=0; idx<s.length; idx+=chars) chunks.push(s.slice(idx, idx+chars));
-      return chunks.length?chunks:[""];
-    });
-    const maxLines = wrappedColumns.reduce((m,arr)=>Math.max(m,arr.length), 1);
-
-    for(let li=0; li<maxLines; li++){
-      if (y > pageH - margin) yNewPage();
-      let x = margin;
-      wrappedColumns.forEach((arr,i)=>{
-        const text = (arr[li]||"").padEnd(Math.floor(cols[i].w/7));
-        doc.text(text, x, y);
-        x += cols[i].w;
-      });
-      y += lineH;
-    }
-  });
-
-  rule();
-
-  // Sektion 2: Per projekt
-  doc.setFont(mono,"bold"); write(`SUMMERING PER PROJEKT (${scope==="year"?"år":"månad"})`);
-  doc.setFont(mono,"normal");
-  const g = groupByProject(months);
-  const projRows = Object.keys(g).sort().map(p=>{
-    const o=g[p];
-    return [
-      p,
-      fmt(o["Ordinarie tid"]||0),
-      fmt(o._kortid||0),
-      fmt(o["Semester-tim"]||0),fmt(o["ATF-tim"]||0),fmt(o["Sjuk-tim"]||0),fmt(o["Föräldraledig"]||0),
-      fmt(o["VAB"]||0),fmt(o["Flextid"]||0),fmt(o["Övertid <2"]||0),fmt(o["Övertid 2>"]||0),
-      fmt(o["Övertid-Helg"]||0),fmt(o["Traktamente"]||0)
-    ];
-  });
-
-  const pCols = [
-    {k:"Projekt", w:160},{k:"Ord",w:50},{k:"Kört",w:50},{k:"Sem",w:40},{k:"ATF",w:40},
-    {k:"Sjuk",w:45},{k:"Föräld",w:55},{k:"VAB",w:40},{k:"Flex",w:45},{k:"ÖT<2",w:45},
-    {k:"ÖT2>",w:45},{k:"Helg",w:45},{k:"Trakt",w:45}
-  ];
-  const pHeader = pCols.map(c=>c.k.padEnd(Math.floor(c.w/7))).join("");
-  doc.setFont(mono,"bold"); write(pHeader); doc.setFont(mono,"normal"); rule();
-
-  projRows.forEach(r=>{
-    const proj = String(r[0]||"");
-    const widthPx = pCols[0].w, chars = Math.max(1, Math.floor(widthPx/7));
-    const projLines=[];
-    for(let i=0;i<proj.length;i+=chars) projLines.push(proj.slice(i,i+chars));
-    const maxLines = Math.max(1, projLines.length);
-
-    for(let li=0; li<maxLines; li++){
-      if (y > pageH - margin) yNewPage();
-      let x = margin;
-      doc.text((projLines[li]||"").padEnd(Math.floor(pCols[0].w/7)), x, y);
-      x += pCols[0].w;
-      for(let ci=1; ci<r.length; ci++){
-        const text = String(r[ci]||"").padEnd(Math.floor(pCols[ci].w/7));
-        doc.text(text, x, y);
-        x += pCols[ci].w;
-      }
-      y += lineH;
-    }
-  });
-
-  // Footer
-  if (y > pageH - margin) yNewPage();
-  doc.setFontSize(8); doc.setTextColor(110);
-  const stamp = new Date().toLocaleString();
-  doc.text(`Genererad: ${stamp}`, margin, pageH - margin);
-
-  return doc.output("blob");
-}
-
-async function sharePdfCommon(scope){
-  const y = state.settings.year, m = String(state.month).padStart(2,"0");
-  const name = scope==="year" ? `Tidrapport_${y}_arsrapport.pdf` : `Tidrapport_${y}_${m}_manadsrapport.pdf`;
-  const blob = makePdfReport(scope);
-
-  if (navigator.canShare && navigator.canShare({files:[new File([blob], name, {type:"application/pdf"})]})) {
-    try {
-      await navigator.share({
-        title: scope==="year" ? "Tidrapport – Årsrapport (PDF)" : "Tidrapport – Månadsrapport (PDF)",
-        files: [new File([blob], name, {type:"application/pdf"})]
-      });
-      return;
-    } catch(e) {}
-  }
-  dl(name, blob);
-  alert("Delning till mail stöds inte här – PDF:en laddades ner istället.");
-}
-window.shareMonthPdfEmail = ()=> sharePdfCommon("month");
-window.shareYearPdfEmail  = ()=> sharePdfCommon("year");
-
-// ===== Excel-stil (månad) =====
-window.exportExcelStyleMonth=()=>{
-  const m=state.month, y=state.settings.year, T=calcMonthTotals(m);
-  const head=[headerInfo("month"), `Totalt:;Ordinarie ${fmt(T["Ordinarie tid"]||0)} h;Körtid ${fmt(T._kortid||0)} h;Semester ${fmt(T["Semester-tim"]||0)} h;Flextid ${fmt(T["Flextid"]||0)} h`, ""].join("\r\n");
-  const body=buildRowsSection("month").replace(/^###.*\r?\n/,'');
-  dl(`tidrapport_${y}_${String(m).padStart(2,"0")}_excelstil.csv`, makeBlobCSV(head+body,'utf16'));
-};
-
-// ===== Print helpers (valfritt) =====
-function printBuild(scope){
-  const y=state.settings.year, mIdx=state.month-1;
-  const hdr=`<div class="print-page">
-      <div class="print-h1">Tidrapport – ${scope==="year"?"Årsrapport":`Månadsrapport ${cap(monthsSv[mIdx])}`}</div>
-      <div class="print-meta">
-        <div><strong>Företag:</strong> ${escapeHtml(state.settings.company||"-")}</div>
-        <div><strong>Namn:</strong> ${escapeHtml(state.settings.name||"-")} &nbsp;&nbsp; <strong>Anst-Nr:</strong> ${escapeHtml(state.settings.emp||"-")}</div>
-        <div><strong>År:</strong> ${y} ${scope==="year"?"":`&nbsp;&nbsp; <strong>Månad:</strong> ${cap(monthsSv[mIdx])}`}</div>
-        ${state.settings.note?`<div><strong>Notering:</strong> ${escapeHtml(state.settings.note)}</div>`:""}
-      </div>
-      <div class="print-section"><h2>Rader (${scope==="year"?"år":"månad"})</h2>${printTableRows(scope)}</div>
-      <div class="print-section"><h2>Summering per projekt (${scope==="year"?"år":"månad"})</h2>${printTableProjects(scope)}</div>
-    </div>`;
-  return hdr;
-}
-function printTableRows(scope){
-  const months = scope==="year" ? Array.from({length:12},(_,i)=>i+1) : [state.month];
-  const rows=sortedRows(months); const head=csvCols;
-  const trs=rows.map(r=>{
-    const cat=r.kategori||""; const val=want=> (cat===want ? fmt(r.tid) : "");
-    const tds=[r.datum, val("Ordinarie tid"), fmt(r.kortid||0), escapeHtml(r.projekt||""), val("Semester-tim"),val("ATF-tim"),val("Sjuk-tim"),val("Föräldraledig"), val("VAB"),val("Flextid"),val("Övertid <2"),val("Övertid 2>"), val("Övertid-Helg"),val("Traktamente"), escapeHtml(r.beskrivning||"")].map(x=>`<td>${x||""}</td>`).join("");
-    return `<tr>${tds}</tr>`;
-  }).join("");
-  return `<table class="print-table"><thead><tr>${head.map(h=>`<th>${h}</th>`).join("")}</tr></thead><tbody>${trs}</tbody></table>`;
-}
-function printTableProjects(scope){
-  const months = scope==="year" ? Array.from({length:12},(_,i)=>i+1) : [state.month];
-  const y=state.settings.year, m=String(state.month).padStart(2,"0"); const g=groupByProject(months); const head=csvCols;
-  const trs=Object.keys(g).sort().map(p=>{
-    const o=g[p]; const datum=scope==="year" ? `${y}-01-01` : `${y}-${m}-01`;
-    const tds=[datum, fmt(o["Ordinarie tid"]||0), fmt(o._kortid||0), escapeHtml(p), fmt(o["Semester-tim"]||0),fmt(o["ATF-tim"]||0),fmt(o["Sjuk-tim"]||0),fmt(o["Föräldraledig"]||0), fmt(o["VAB"]||0),fmt(o["Flextid"]||0),fmt(o["Övertid <2"]||0),fmt(o["Övertid 2>"]||0), fmt(o["Övertid-Helg"]||0),fmt(o["Traktamente"]||0), "Summerat per projekt"].map(x=>`<td>${x||""}</td>`).join("");
-    return `<tr>${tds}</tr>`;
-  }).join("");
-  return `<table class="print-table"><thead><tr>${head.map(h=>`<th>${h}</th>`).join("")}</tr></thead><tbody>${trs}</tbody></table>`;
-}
-function showPrint(html){ const root=$("printRoot"); root.innerHTML=html; root.style.display="block"; setTimeout(()=>{ window.print(); root.style.display="none"; root.innerHTML=""; }, 50); }
-
-// ===== Backup (IndexedDB + File System Access + iOS fallback) =====
-let backupHandle=null;
-let backupDirHandle=null;
-let backupDirty=false, savingNow=false; let lastSaveStamp=0; let backupTimer=null;
-let lastBackupStatus="";
-
-function two(n){return String(n).padStart(2,"0")}
-function yyyymm(y, m){return `${y}_${two(m)}`}
-function suggestedBackupName(){ const y=state.settings.year; const m=state.month; return `tidrapport_backup_${yyyymm(y,m)}.json`; }
-
-// IDB helpers
-function idbOpen(){ return new Promise((res,rej)=>{ const req=indexedDB.open(IDB_NAME,1); req.onupgradeneeded=()=>{const db=req.result; if(!db.objectStoreNames.contains(IDB_STORE)) db.createObjectStore(IDB_STORE);}; req.onsuccess=()=>res(req.result); req.onerror=()=>rej(req.error); });}
-async function idbGet(key){ const db=await idbOpen(); return new Promise((res,rej)=>{ const tx=db.transaction(IDB_STORE,"readonly"); const st=tx.objectStore(IDB_STORE); const rq=st.get(key); rq.onsuccess=()=>res(rq.result||null); rq.onerror=()=>rej(rq.error); });}
-async function idbSet(key,val){ const db=await idbOpen(); return new Promise((res,rej)=>{ const tx=db.transaction(IDB_STORE,"readwrite"); const st=tx.objectStore(IDB_STORE); const rq=st.put(val,key); rq.onsuccess=()=>res(true); rq.onerror=()=>rej(rq.error); });}
-async function idbDel(key){ const db=await idbOpen(); return new Promise((res,rej)=>{ const tx=db.transaction(IDB_STORE,"readwrite"); const st=tx.objectStore(IDB_STORE); const rq=st.delete(key); rq.onsuccess=()=>res(true); rq.onerror=()=>rej(rq.error); });}
-
-function updateBackupStatus(msg){
-  const wrap=$("backupStatus"); if(!wrap) return;
-
-  let text;
-  if (msg) text = "Backup: " + msg;
-  else text = (backupDirHandle || backupHandle) ? "Backup: aktiv" : "Backup: ej konfigurerad";
-
-  const txt = wrap.querySelector(".text");
-  if (txt) txt.textContent = text;
-
-  wrap.classList.remove("ok","warn","info");
-  if (text.startsWith("Backup: aktiv") || text.includes("sparad") || text.includes("synkat")) wrap.classList.add("ok");
-  else if (text.includes("behörighet saknas") || text.includes("ej sparad") || text.includes("ej tillgänglig")) wrap.classList.add("warn");
-  else wrap.classList.add("info");
-
-  if (lastBackupStatus &&
-      lastBackupStatus.startsWith("Backup: aktiv") &&
-      !text.startsWith("Backup: aktiv") &&
-      !text.includes("synkat") &&
-      !sessionStorage.getItem("backupWarnShown")) {
-    alert("⚠️ Tidrapport kan inte längre spara backup automatiskt.\n\nVälj 'Välj backup-mapp' eller 'Välj/ändra backup-fil'.");
-    sessionStorage.setItem("backupWarnShown","1");
-    if (typeof toggleMenu === "function") toggleMenu(true);
-  }
-  lastBackupStatus = text;
-}
-
-// Fil eller mapp
-window.pickBackupFile=async ()=>{
-  if(!("showSaveFilePicker" in window)){ alert("Din webbläsare saknar stöd för filval. Använd mapp eller Snabb-backup."); return; }
-  try{
-    const fh=await window.showSaveFilePicker({ suggestedName: suggestedBackupName(), types:[{description:"JSON", accept:{"application/json":[".json"]}}] });
-    const perm=await fh.requestPermission({mode:"readwrite"}); if(perm!=="granted"){ alert("Behörighet nekad."); return; }
-    backupHandle=fh; await idbSet("backupHandle", fh);
-    backupDirHandle=null; await idbDel("backupDirHandle");
-    updateBackupStatus("aktiv – fil vald"); await backupWriteNow(true);
-  }catch(_){}
-};
-window.pickBackupFolder=async ()=>{
-  if(!("showDirectoryPicker" in window)){ alert("Din webbläsare saknar stöd för mappval."); return; }
-  try{
-    const dh=await window.showDirectoryPicker();
-    const perm=await dh.requestPermission({mode:"readwrite"}); if(perm!=="granted"){ alert("Behörighet nekad."); return; }
-    backupDirHandle=dh; await idbSet("backupDirHandle", dh);
-    backupHandle=null; await idbDel("backupHandle");
-    updateBackupStatus("aktiv – mapp vald (månadsversioner)"); await backupWriteNow(true);
-  }catch(_){}
-};
-
-async function ensureBackupTarget(){ if(!state.settings.autoBackup) return; if(!("showSaveFilePicker" in window) && !backupDirHandle){ updateBackupStatus("ej tillgänglig i denna webbläsare"); } if(!backupDirHandle && !backupHandle){ await window.pickBackupFolder().catch(()=>{}); } }
-
-function markBackupDirty(){ if(!state.settings.autoBackup) return; backupDirty=true; if(isiOS) return; scheduleBackup(); }
-function scheduleBackup(){ if(backupTimer) clearTimeout(backupTimer); backupTimer=setTimeout(()=>backupWriteNow(false),800); }
-
-function currentPayload(){ return {version:"v9", updatedAt: Date.now(), settings: state.settings, data: state.data}; }
-function touchLocalUpdated(){ localStorage.setItem("tidrapport_local_updated", String(Date.now())); }
-
-async function backupWriteNow(force){
-  if(isiOS) return;
-  if(savingNow) return; if(!state.settings.autoBackup) return;
-  if(!backupDirHandle && !backupHandle){ await ensureBackupTarget(); if(!backupDirHandle && !backupHandle) return; }
-  if(!force && !backupDirty) return;
-  try{
-    savingNow=true;
-    const payload=currentPayload(); const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});
-    if(backupDirHandle){
-      const name=suggestedBackupName();
-      const fh=await backupDirHandle.getFileHandle(name,{create:true});
-      const perm=await fh.requestPermission({mode:"readwrite"}); if(perm!=="granted"){ updateBackupStatus("behörighet saknas (mapp)"); return; }
-      const ws=await fh.createWritable(); await ws.write(blob); await ws.close();
-      updateBackupStatus(`sparad → ${name}`);
-    }else{
-      const perm=await backupHandle.requestPermission({mode:"readwrite"}); if(perm!=="granted"){ updateBackupStatus("behörighet saknas (fil)"); return; }
-      const ws=await backupHandle.createWritable(); await ws.close(); // skapa tom för compat
-      const ws2=await backupHandle.createWritable(); await ws2.write(blob); await ws2.close();
-      updateBackupStatus("sparad");
-    }
-    backupDirty=false; lastSaveStamp=payload.updatedAt;
-  }catch(e){ updateBackupStatus("ej sparad (försöker igen)"); }
-  finally{ savingNow=false; }
-}
-
-// Startsynk från fil eller mapp
-async function backupLoadIfNewer(){
-  if(!backupHandle) return;
-  try{
-    const perm=await backupHandle.requestPermission({mode:"read"}); if(perm!=="granted") return;
-    const file=await backupHandle.getFile(); const text=await file.text(); const obj=JSON.parse(text);
-    if(obj && obj.updatedAt && typeof obj.updatedAt==="number"){
-      const localUpdated=Number(localStorage.getItem("tidrapport_local_updated")||"0");
-      if(obj.updatedAt>localUpdated){
-        state.data=obj.data||state.data; state.settings=obj.settings||state.settings;
-        save(); saveCfg(); renderAll(); localStorage.setItem("tidrapport_local_updated", String(obj.updatedAt));
-        updateBackupStatus("synkat från fil");
-      }
-    }
-  }catch(_){}
-}
-async function backupLoadLatestFromFolder(){
-  if(!backupDirHandle) return;
-  try{
-    const files=[];
-    for await (const [name, handle] of backupDirHandle.entries()){
-      if(handle.kind==="file" && /^tidrapport_backup_\d{4}_\d{2}\.json$/.test(name)){ files.push({name,handle}); }
-    }
-    if(!files.length) return;
-    files.sort((a,b)=>a.name.localeCompare(b.name));
-    const latest=files[files.length-1]; const file=await latest.handle.getFile(); const text=await file.text(); const obj=JSON.parse(text);
-    if(obj && obj.updatedAt && typeof obj.updatedAt==="number"){
-      const localUpdated=Number(localStorage.getItem("tidrapport_local_updated")||"0");
-      if(obj.updatedAt>localUpdated){
-        state.data=obj.data||state.data; state.settings=obj.settings||state.settings;
-        save(); saveCfg(); renderAll(); localStorage.setItem("tidrapport_local_updated", String(obj.updatedAt));
-        updateBackupStatus(`synkat från ${latest.name}`);
-      }
-    }
-  }catch(_){}
-}
-
-// iOS: Snabb-backup (delning)
-window.quickBackup=async ()=>{
-  const payload=currentPayload(); const name=suggestedBackupName(); const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});
-  if(navigator.canShare && navigator.canShare({files:[new File([blob],name,{type:"application/json"})]})){
-    try{ await navigator.share({title:"Tidrapport-backup", files:[new File([blob],name,{type:"application/json"})]}); updateBackupStatus("delad (iOS)"); }
-    catch(_){}
-  }else{
-    const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=name; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1500);
-    updateBackupStatus("nedladdad");
-  }
-};
-
-// Självtest
-async function verifyBackupAccess(){
-  if (isiOS) return false;
-  try{
-    if (backupDirHandle){
-      const perm = await backupDirHandle.requestPermission({mode:"readwrite"});
-      if (perm !== "granted") return false;
-      const name = suggestedBackupName();
-      const fh = await backupDirHandle.getFileHandle(name, {create:true});
-      if (fh.createWritable){
-        const ws = await fh.createWritable({keepExistingData:true}).catch(()=>null);
-        if (ws){ await ws.close(); }
-      }
-      return true;
-    }
-    if (backupHandle){
-      const perm = await backupHandle.requestPermission({mode:"readwrite"});
-      if (perm !== "granted") return false;
-      if (backupHandle.createWritable){
-        const ws = await backupHandle.createWritable({keepExistingData:true}).catch(()=>null);
-        if (ws){ await ws.close(); }
-      }
-      return true;
-    }
-    return false;
-  }catch(_){ return false; }
-}
-window.testBackupNow = async ()=>{
-  if (isiOS){ alert("iOS stöder inte autospar. Använd Snabb-backup eller Exportera backup (JSON)."); return; }
-  const ok = await verifyBackupAccess();
-  if (ok){
-    updateBackupStatus("aktiv (test OK)");
-    await backupWriteNow(true);
-    alert("Backuptest OK. Säkerhetskopian sparades.");
-  }else{
-    updateBackupStatus("ej konfigurerad");
-    alert("Backuptest misslyckades. Välj backup-mapp (rekommenderas) eller backup-fil igen.");
-    if (typeof toggleMenu==="function") toggleMenu(true);
-  }
-};
-window.restoreBackupNow = async ()=>{
-  try {
-    if (backupDirHandle) {
-      await backupLoadLatestFromFolder();
-      alert("Återställde senaste backupfilen från vald mapp.");
-    } else if (backupHandle) {
-      await backupLoadIfNewer();
-      alert("Återställde backup från vald fil.");
-    } else {
-      alert("Ingen backup-fil eller mapp är vald. Välj först under Inställningar.");
-    }
-  } catch(e){
-    console.error("Restore error", e);
-    alert("Kunde inte läsa backup: " + e.message);
-  }
-};
-window.addEventListener("online", ()=> backupWriteNow(false));
-
-// Boot
-(async ()=>{
-  try{
-    const fh=await idbGet("backupHandle"); if(fh) backupHandle=fh;
-    const dh=await idbGet("backupDirHandle"); if(dh) backupDirHandle=dh;
-    updateBackupStatus();
-
-    if(state.settings.autoBackup){
-      if(backupDirHandle){ await backupLoadLatestFromFolder(); }
-      else { await ensureBackupTarget(); await backupLoadIfNewer(); }
-    }
-
-    if (!isiOS && (backupHandle || backupDirHandle)){
-      const ok = await verifyBackupAccess();
-      if (!ok){
-        backupHandle = null; backupDirHandle = null;
-        await idbDel("backupHandle"); await idbDel("backupDirHandle");
-        updateBackupStatus("ej konfigurerad");
-        if (typeof toggleMenu==="function") toggleMenu(true);
-      }
-    }
-
-    const qb=$("btnQuickBackup"); if(qb) qb.style.display = isiOS ? "" : "none";
-  }catch(_){}
-})();
-
-// ===== Import/Backup JSON =====
-function makeJsonBlob(){ const payload={settings:state.settings,data:state.data,version:"v9",updatedAt:Date.now()}; return new Blob([JSON.stringify(payload,null,2)],{type:"application/json"}); }
-window.exportJSON=()=>{ dl(`tidrapport_backup_${state.settings.year}_${String(state.month).padStart(2,"0")}.json`, makeJsonBlob()); }
-window.importJSON=async(ev)=>{
-  const f=ev.target.files?.[0]; if(!f) return;
-  try{
-    const text=await f.text(); const obj=JSON.parse(text);
-    if(!obj || typeof obj!=='object' || !obj.data){alert("Ogiltig backupfil."); return;}
-    state.data=obj.data; if(obj.settings) state.settings=obj.settings;
-    save(); saveCfg(); renderAll(); alert("Backup återställd.");
-  }catch(e){ alert("Kunde inte läsa backup: "+e.message); }
-  ev.target.value="";
-}
-window.shareJSON=async()=>{
-  const blob=makeJsonBlob(); const name=`tidrapport_backup_${state.settings.year}_${String(state.month).padStart(2,"0")}.json`;
-  if(navigator.canShare && navigator.canShare({files:[new File([blob],name,{type:blob.type})]})){
-    try{await navigator.share({title:"Tidrapport-backup",files:[new File([blob],name,{type:blob.type})]});}catch(_){}
-  }else{ dl(name, blob); alert("Delning stöds inte – filen laddades ner istället."); }
-}
-
-// ===== CSV-import (stödjer vår kombinerade export) =====
-window.importCSV = async (ev) => {
-  const f = ev.target.files?.[0]; if (!f) return;
-  const text = await f.text();
-
-  // Dela upp i rader och rensa BOM
-  let lines = text.replace(/^\uFEFF/, "").split(/\r?\n/).map(s => s.trimEnd());
-  if (!lines.length) { alert("Filen är tom."); ev.target.value=""; return; }
-
-  // Leta upp första riktiga tabellhuvudet
-  const wantedHeader = ["Datum","Ordinarie tid","Körtid","Projekt nr","Semester-tim","ATF-tim","Sjuk-tim","Föräldraledig","VAB","Flextid","Övertid <2","Övertid 2>","Övertid-Helg","Traktamente","Beskrivning"];
-  let headerIdx = -1;
-  for (let i = 0; i < lines.length; i++) {
-    const raw = lines[i].trim();
-    if (!raw || /^sep=;$/i.test(raw) || raw.startsWith("###")) continue;
-    const parts = raw.split(";");
-    if (parts.length >= wantedHeader.length) {
-      const normalized = parts.slice(0, wantedHeader.length).map(s => s.replace(/(^"|"$)/g,"").trim());
-      const match = wantedHeader.every((h, idx) => (normalized[idx]||"").toLowerCase() === h.toLowerCase());
-      if (match) { headerIdx = i; break; }
-    }
-  }
-  if (headerIdx === -1) {
-    alert("Hittade ingen tabell med förväntade kolumner.");
-    ev.target.value=""; return;
-  }
-
-  // Ta datarader i denna sektion tills nästa "###" eller filslut
-  const dataLines = [];
-  for (let i = headerIdx + 1; i < lines.length; i++) {
-    const L = lines[i];
-    if (!L || L.startsWith("###")) break;
-    dataLines.push(L);
-  }
-
-  // Semikolon-parser som stödjer citat
-  const parseCSVLine = (line) => {
-    const cols = []; let cur = "", q = false;
-    for (let i = 0; i < line.length; i++) {
-      const ch = line[i];
-      if (ch === '"') {
-        if (q && line[i+1] === '"') { cur += '"'; i++; }
-        else { q = !q; }
-      } else if (ch === ';' && !q) {
-        cols.push(cur); cur = "";
-      } else {
-        cur += ch;
-      }
-    }
-    cols.push(cur);
-    return cols;
-  };
-
-  // Indexera kolumner
-  const header = parseCSVLine(lines[headerIdx]).map(s => s.replace(/(^"|"$)/g,""));
-  const idxName = n => header.findIndex(h => h.trim().toLowerCase() === n.trim().toLowerCase());
-  const miss = wantedHeader.filter(c => idxName(c) === -1);
-  if (miss.length) { alert("Importfel: saknar kolumner: " + miss.join(", ")); ev.target.value=""; return; }
-
-  // Importera rader
-  let count = 0;
-  dataLines.forEach(line => {
-    const cols = parseCSVLine(line);
-    const d = (cols[idxName("Datum")]||"").trim();
-    if (!d) return;
-    const m = (new Date(d)).getMonth() + 1;
-    if (!state.data[m]) state.data[m] = [];
-
-    const proj = (cols[idxName("Projekt nr")]||"").replace(/(^"|"$)/g,"");
-    const toNumRawLocal = (s) => {
-      if (s == null) return NaN;
-      s = String(s).replace(/\s+/g,"").replace(",",".").replace(/[–—−]/g,"-");
-      if (!/^[-]?\d*(\.\d+)?$/.test(s)) return NaN;
-      return s === "" ? NaN : parseFloat(s);
-    };
-    const kort = toNumRawLocal(cols[idxName("Körtid")]);
-    const desc = (cols[idxName("Beskrivning")]||"").replace(/(^"|"$)/g,"").replace(/""/g,'"');
-
-    const categories = ["Ordinarie tid","Semester-tim","ATF-tim","Sjuk-tim","Föräldraledig","VAB","Flextid","Övertid <2","Övertid 2>","Övertid-Helg","Traktamente"];
-    categories.forEach(cat => {
-      const v = toNumRawLocal(cols[idxName(cat)]);
-      if (!isNaN(v) && v !== 0) {
-        state.data[m].push({
-          _id: Date.now().toString(36)+Math.random().toString(36).slice(2,8),
-          datum: d,
-          kategori: cat,
-          tid: v,
-          projekt: sanitizeProject(proj),
-          kortid: isNaN(kort) ? 0 : kort,
-          beskrivning: desc
-        });
-        count++;
-      }
-    });
-  });
-
-  save(); renderAll();
-  alert("Importerade rader: " + count);
-  ev.target.value = "";
-};
-
-// ===== Publika app-actions =====
-window.APP={
-  edit:(m, idx)=>{
-    const r=state.data[m][idx];
-    $("datum").value=r.datum; $("kategori").value=r.kategori;
-    $("tid").value=(r.tid??0).toString().replace(".",",");
-    $("projekt").value=r.projekt||""; $("kortid").value=(r.kortid??0).toString().replace(".",",");
-    $("beskrivning").value=r.beskrivning||"";
-    enterEditMode(r, m);
-    scrollTo({top:0,behavior:"smooth"});
-  },
-  del:(m, idx)=>{
-    const r=state.data[m][idx];
-    const msg=`Vill du verkligen radera raden?\n\nDatum: ${r.datum}\nProjekt: ${r.projekt||"-"}\nKategori: ${r.kategori}\nTid: ${fmt(r.tid)} h\nKörtid: ${fmt(r.kortid)} h`;
-    if(!confirm(msg)) return;
-    state.data[m].splice(idx,1); save();
-    if(editing && editing.id===r._id) exitEditMode();
-    renderAll();
-  }
-};
-
-// ===== E-postutkast (.eml) – bifogar månads-CSV =====
-window.createEmlDraft=()=>{
-  const y=state.settings.year, m=String(state.month).padStart(2,"0");
-  const body=`Hej,\n\nHär kommer min tidrapport.\n\nHälsningar,\n${state.settings.name||""}`;
-  const csv=buildCombinedCsv("month");
-  const utf8=new TextEncoder().encode(csv);
-  let base64=""; const chars="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
-  for(let i=0;i<utf8.length;i+=3){
-    const a=utf8[i], b=utf8[i+1], c=utf8[i+2];
-    const trip=(a<<16)|((b||0)<<8)|(c||0);
-    base64+= chars[(trip>>18)&63] + chars[(trip>>12)&63] + (isNaN(b)?"=":chars[(trip>>6)&63]) + (isNaN(c)?"=":chars[trip&63]);
-  }
-  const fname=`Tidrapport_${y}_${m}_manadsrapport.csv`;
-  const eml=
-`Subject: Tidrapport ${y}-${m}
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="BOUNDARY"
-
---BOUNDARY
-Content-Type: text/plain; charset="utf-8"
-
-${body}
-
---BOUNDARY
-Content-Type: text/csv; name="${fname}"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="${fname}"
-
-${base64}
---BOUNDARY--`;
-  const emlBlob=new Blob([eml],{type:"message/rfc822"});
-  dl(`tidrapport_${y}_${m}.eml`, emlBlob);
-};
-
-// ===== Boot =====
-for(let m=1;m<=12;m++) ensureMonth(m);
-renderAll();
-})();
-</script>
 </body>
 </html>
