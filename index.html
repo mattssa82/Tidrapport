@@ -342,8 +342,8 @@ function initMenu(){
 }
 window.changeMonth=()=>{ state.month=Number($("menuMonth").value)||state.month; renderAll(); toggleMenu(false); }
 
-window.openHelp=()=>{ document.getElementById("helpOverlay").classList.add("open"); }
-window.closeHelp=()=>{ document.getElementById("helpOverlay").classList.remove("open"); }
+window.openHelp=()=>{ $("helpOverlay").classList.add("open"); }
+window.closeHelp=()=>{ $("helpOverlay").classList.remove("open"); }
 
 // ===== Settings =====
 window.saveSettings=()=>{
@@ -816,7 +816,7 @@ document.addEventListener("DOMContentLoaded", onReady);
 })();
 </script>
 
-<!-- Service Worker registrering -->
+<!-- Service Worker registrering (valfritt) -->
 <script>
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("sw.js").catch(err=>{
@@ -825,4 +825,4 @@ if ("serviceWorker" in navigator) {
 }
 </script>
 </body>
-  </html>
+</html>
