@@ -1,9 +1,9 @@
-const CACHE_NAME = "tidrapport-v1";
+const CACHE_NAME = "tidrapport-v2";  // byt till v2 för att tvinga uppdatering
 const FILES_TO_CACHE = [
   "./",
   "./index.html",
   "./manifest.json",
-  "./icon-512.png"
+  "./icon-512.png"   // samma som i repot
 ];
 
 // Install
