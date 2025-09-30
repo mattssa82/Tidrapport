@@ -1,9 +1,9 @@
-const CACHE_NAME = "tidrapport-v2";  // byt till v2 för att tvinga uppdatering
+const CACHE_NAME = "tidrapport-v3";
 const FILES_TO_CACHE = [
   "./",
   "./index.html",
   "./manifest.json",
-  "./icon-512.png"   // samma som i repot
+  "./icon-512.png"
 ];
 
 // Install
@@ -17,22 +17,17 @@ self.addEventListener("install", (event) => {
 // Activate
 self.addEventListener("activate", (event) => {
   event.waitUntil(
-    caches.keys().then((keyList) =>
-      Promise.all(
-        keyList.map((key) => {
-          if (key !== CACHE_NAME) return caches.delete(key);
-        })
-      )
+    caches.keys().then((keys) =>
+      Promise.all(keys.map((k) => (k !== CACHE_NAME ? caches.delete(k) : null)))
     )
   );
   self.clients.claim();
 });
 
-// Fetch
+// Fetch (cache-first fallback network)
 self.addEventListener("fetch", (event) => {
   event.respondWith(
-    caches.match(event.request).then((resp) => {
-      return resp || fetch(event.request);
-    })
+    caches.match(event.request, { ignoreSearch: true }).then((resp) => resp || fetch(event.request))
   );
+});  );
 });
