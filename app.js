@@ -53,6 +53,8 @@ function initMenu(){
   if(cfgAutoBackup) cfgAutoBackup.checked = state.settings.autoBackup!==false;
 }
 window.changeMonth=()=>{ const sel=$("menuMonth"); if(!sel) return; state.month=Number(sel.value)||state.month; renderAll(); toggleMenu(false); }
+window.prevYear=()=>{ state.settings.year=(Number(state.settings.year)||new Date().getFullYear())-1; saveCfg(); renderAll(); }
+window.nextYear=()=>{ state.settings.year=(Number(state.settings.year)||new Date().getFullYear())+1; saveCfg(); renderAll(); }
 
 window.openHelp=()=>{ const el=$("helpOverlay"); if(el) el.classList.add("open"); }
 window.closeHelp=()=>{ const el=$("helpOverlay"); if(el) el.classList.remove("open"); }
@@ -432,9 +434,13 @@ function makePdf(scope){ // -> Blob
 window.shareMonthPdfEmail=async()=>{ const blob=makePdf("month"); await tryShareOrDownload(`Tidrapport_${state.settings.year}_${String(state.month).padStart(2,"0")}.pdf`, blob, "Tidrapport – Månadsrapport (PDF)"); };
 window.shareYearPdfEmail=async()=>{ const blob=makePdf("year"); await tryShareOrDownload(`Tidrapport_${state.settings.year}.pdf`, blob, "Tidrapport – Årsrapport (PDF)"); };
 
-// .eml utkast (enkelt)
+// .eml utkast (enkelt) — ÄMNE: "Namn Tidrapport ÅÅÅÅ månad"
 window.createEmlDraft=()=>{
-  const subject = encodeURIComponent(`Tidrapport ${state.settings.year} – ${monthsSv[state.month-1]}`);
+  const nm = (state.settings.name||"").trim();
+  const y  = state.settings.year;
+  const m  = monthsSv[(state.month-1)];
+  const subjectText = `${nm ? nm+" " : ""}Tidrapport ${y} ${m}`;
+  const subject = encodeURIComponent(subjectText);
   const body = encodeURIComponent("Hej!\n\nSe bifogad tidrapport.\n\n// Skapad i Tidrapport");
   location.href = `mailto:?subject=${subject}&body=${body}`;
 };
