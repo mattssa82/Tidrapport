@@ -29,5 +29,4 @@ self.addEventListener("fetch", (event) => {
   event.respondWith(
     caches.match(event.request, { ignoreSearch: true }).then((resp) => resp || fetch(event.request))
   );
-});  );
 });
