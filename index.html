@@ -170,6 +170,15 @@ hr.sep{border:0;border-top:1px dashed var(--line);margin:.8rem 0}
   </div>
 
   <div style="padding:1rem;display:grid;gap:1rem">
+
+   <!-- Sök -->
+  <details>
+  <summary>🔍 Sök</summary>
+  <input type="text" id="searchInput" placeholder="Sök i alla månader…" />
+  <button class="btn primary" onclick="searchData()">Sök</button>
+  <div id="searchResults" class="small"></div>
+  </details>
+    
     <!-- Månad -->
     <details open>
       <summary>📅 Månad</summary>
