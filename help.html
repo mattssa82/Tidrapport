@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Hjälp – Tidrapport</title>
+<meta name="theme-color" content="#0e6677" />
+<link rel="icon" href="icon-512.png" />
+<link rel="manifest" href="manifest.json" />
+<style>
+:root{
+  --brand:#0e6677; --bg:#f6f7f9; --card:#ffffff; --text:#1f2937; --muted:#6b7280; --line:#e5e7eb;
+  --ok:#16a34a; --warn:#b45309; --danger:#b91c1c; --accent:#0a515f;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0; background:var(--bg); color:var(--text); font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+header{background:var(--brand); color:#fff; padding:1rem 1.25rem; display:flex; align-items:center; gap:.6rem}
+header a{color:#fff; text-decoration:none; font-weight:700; background:rgba(255,255,255,.15); padding:.35rem .6rem; border-radius:.5rem}
+h1{margin:0; font-size:1.35rem; letter-spacing:.2px}
+main{max-width:980px; margin:0 auto; padding:1rem; display:grid; gap:1rem}
+.card{
+  background:var(--card); border:1px solid var(--line); border-radius:.9rem; padding:1rem;
+  box-shadow:0 1px 2px rgba(0,0,0,.04);
+}
+.section-title{display:flex; align-items:center; gap:.5rem; margin:0 0 .75rem 0; font-size:1.05rem}
+.section-title .badge{display:inline-grid; place-items:center; width:28px; height:28px; border-radius:8px; background:#eef2f7; color:#111}
+.list{display:grid; gap:.5rem}
+.row{display:grid; grid-template-columns:28px 1fr; gap:.6rem; align-items:start}
+.ico{width:28px; height:28px; border-radius:8px; display:grid; place-items:center; background:#eef2f7; color:#111; font-size:1rem; user-select:none}
+.small{color:var(--muted); font-size:.92rem}
+hr.sep{border:0; border-top:1px dashed var(--line); margin:1rem 0}
+.callout{display:flex; gap:.75rem; align-items:flex-start; border-radius:.8rem; padding:.9rem 1rem; border:1px solid}
+.callout.ok{background:#ecfdf5; border-color:#bbf7d0; color:#065f46}
+.callout.warn{background:#fff7ed; border-color:#fed7aa; color:#7c2d12}
+.callout.danger{background:#fef2f2; border-color:#fecaca; color:#7f1d1d}
+.callout .ico{background:transparent; color:inherit; border:1px solid currentColor}
+.grid-2{display:grid; gap:1rem}
+@media(min-width:860px){.grid-2{grid-template-columns:1fr 1fr}}
+.btn{border:0; border-radius:.8rem; padding:.7rem 1rem; font-weight:700; cursor:pointer; font-size:1rem; display:inline-flex; gap:.5rem; align-items:center; justify-content:center}
+.btn.primary{background:var(--brand); color:#fff}
+kbd{background:#111; color:#fff; border-radius:.35rem; padding:.08rem .4rem; font-size:.85em; font-family:ui-monospace, SFMono-Regular, Menlo, monospace}
+.chips{display:flex; flex-wrap:wrap; gap:.35rem}
+.chip{font-size:.85rem; padding:.15rem .5rem; border-radius:.6rem; background:#eef2f7}
+a{color:var(--accent); text-decoration:none}
+a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<header>
+  <a href="index.html">← Tillbaka</a>
+  <h1>Hjälp / Manual</h1>
+</header>
+
+<main>
+  <section class="card">
+    <div class="section-title"><span class="badge">📘</span><strong>Så funkar appen</strong></div>
+    <div class="list">
+      <div class="row"><div class="ico">📅</div><div><strong>Datum</strong><div class="small">Välj aktuell dag.</div></div></div>
+      <div class="row"><div class="ico">🏷️</div><div><strong>Kategori</strong><div class="small">Ordinarie, Flextid, Övertid, Semester m.fl.</div></div></div>
+      <div class="row"><div class="ico">⏱️</div><div><strong>Tid</strong><div class="small">0,25-steg. Minus tillåtet för flex/ö-tids-korr.</div></div></div>
+      <div class="row"><div class="ico">🚗</div><div><strong>Körtid</strong><div class="small">Valfritt, 0,25-steg.</div></div></div>
+      <div class="row"><div class="ico">📦</div><div><strong>Projekt</strong><div class="small">Används för summering per projekt.</div></div></div>
+      <div class="row"><div class="ico">📝</div><div><strong>Beskrivning</strong><div class="small">Fri text.</div></div></div>
+      <div class="row"><div class="ico">➕</div><div><strong>Lägg till</strong><div class="small">Raden hamnar i tabellen och kan ändras/ta bort.</div></div></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="section-title"><span class="badge">⚖️</span><strong>Balansregler (8h vardag)</strong></div>
+    <div class="small">
+      <p><strong>Grön</strong> när <em>effektiv Ordinarie</em> ≥ 8h. Beräknas så här:</p>
+      <ul>
+        <li><strong>Ordinarie tid</strong> (positiv) räknas som Ord.</li>
+        <li><strong>Negativa</strong> timmar i <em>Flextid, Semester-tim, ATF-tim, Övertid &lt;2, Övertid 2&gt;, Övertid-Helg</em> räknas som Ord.</li>
+        <li><strong>VAB, Sjuk-tim, Föräldraledig</strong> (positiva) ger <em>inte</em> plus mot 8h (de visar frånvaro).</li>
+        <li>Helg och röda dagar markeras separat och påverkas inte av regeln.</li>
+        <li>Traktamente påverkar inte balansen (visas bara).</li>
+      </ul>
+      <p>Exempel:</p>
+      <ul>
+        <li>8h Ord → Grön (OK 8h)</li>
+        <li>6h Ord + (-2h Flex) → Grön (effektiv 8h)</li>
+        <li>-8h Flex → Grön (effektiv 8h)</li>
+        <li>6h Ord + 2h VAB → Orange (effektiv 6h)</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="section-title"><span class="badge">🔍</span><strong>Sök & Export</strong></div>
+    <div class="small">
+      <p>Öppna <em>Sök</em> via menyn → skriv fritt (datum, projekt, kategori, beskrivning). Alla månader/året skannas.</p>
+      <p>Exportera eller dela träffar som CSV via knapparna i sökvyn.</p>
+      <p>Vanlig export finns under <em>Export</em>: Månads- och Årsrapport (CSV) samt PDF.</p>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="section-title"><span class="badge">☁️</span><strong>Backup & Återställning</strong></div>
+    <div class="small">
+      <p>Använd <em>Snabbbackup</em> (JSON) för att spara i t.ex. OneDrive/Google Drive/iCloud. Återläs via “Importera JSON (backup)”.</p>
+      <p>CSV-export kan också importeras igen (stödjer samma kolumnordning som exporten).</p>
+    </div>
+  </section>
+
+  <section class="card">
+    <a class="btn primary" href="index.html">← Tillbaka till Tidrapport</a>
+  </section>
+</main>
+</body>
+</html>
