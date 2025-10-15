@@ -1,0 +1,46 @@
+{
+  "name": "Tidrapport",
+  "short_name": "Tidrapport",
+  "description": "Offline-kapabel tidrapport med sök, balansregler, export (CSV/PDF) och backup.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "theme_color": "#0e6677",
+  "background_color": "#f6f7f9",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["productivity", "business"],
+  "dir": "auto",
+  "lang": "sv-SE",
+  "id": "/Tidrapport",
+  "shortcuts": [
+    {
+      "name": "Öppna aktuell månad",
+      "url": "./index.html#current",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Årsöversikt",
+      "url": "./index.html#year",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Sök",
+      "url": "./index.html#search",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}

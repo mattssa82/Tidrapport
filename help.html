@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Hjälp – Tidrapport</title>
+<meta name="theme-color" content="#0e6677" />
+<link rel="icon" href="icon-512.png" />
+<link rel="manifest" href="manifest.json" />
+<style>
+:root{
+  --brand:#0e6677; --bg:#f6f7f9; --card:#fff; --text:#1f2937; 
+  --muted:#6b7280; --line:#e5e7eb; --ok:#16a34a; --warn:#b45309; --danger:#b91c1c;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+header{background:var(--brand);color:#fff;padding:1rem 1.25rem}
+h1{margin:0;font-size:1.4rem}
+main{max-width:960px;margin:0 auto;padding:1rem;display:grid;gap:1rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:.9rem;padding:1rem;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+.section-title{display:flex;align-items:center;gap:.5rem;margin:0 0 .75rem 0;font-size:1.05rem}
+.badge{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:8px;background:#eef2f7;color:#111}
+.row{display:grid;grid-template-columns:28px 1fr;gap:.6rem;align-items:start}
+.ico{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;background:#eef2f7;color:#111;font-size:1rem}
+.small{color:var(--muted);font-size:.92rem}
+.callout{border-radius:.8rem;padding:.9rem 1rem;border:1px solid}
+.callout.ok{background:#ecfdf5;border-color:#bbf7d0;color:#065f46}
+.callout.warn{background:#fff7ed;border-color:#fed7aa;color:#7c2d12}
+.callout.danger{background:#fef2f2;border-color:#fecaca;color:#7f1d1d}
+hr{border:0;border-top:1px dashed var(--line);margin:1rem 0}
+.footer-note{font-size:.85rem;color:var(--muted);text-align:center;padding:1rem 0 1.2rem}
+kbd{background:#111;color:#fff;border-radius:.35rem;padding:.08rem .4rem;font-size:.85em}
+</style>
+</head>
+<body>
+<header>
+  <h1>📘 Hjälp & Manual – Tidrapport v5-A3</h1>
+</header>
+<main>
+
+<section class="card">
+  <div class="section-title"><span class="badge">🧭</span><strong>Grundläggande användning</strong></div>
+  <div class="row"><div class="ico">📅</div><div><strong>Datum</strong><br><span class="small">Välj aktuell dag.</span></div></div>
+  <div class="row"><div class="ico">🏷️</div><div><strong>Kategori</strong><br><span class="small">Ordinarie, Flextid, Övertid, Semester m.m.</span></div></div>
+  <div class="row"><div class="ico">⏱️</div><div><strong>Timmar</strong><br><span class="small">Ange timmar i steg om 0,25. Minus tillåtet vid korrigering.</span></div></div>
+  <div class="row"><div class="ico">🚗</div><div><strong>Körtid</strong><br><span class="small">Valfritt. Även 0,25-steg.</span></div></div>
+  <div class="row"><div class="ico">📝</div><div><strong>Beskrivning</strong><br><span class="small">Kort beskrivning av arbetet.</span></div></div>
+  <div class="row"><div class="ico">➕</div><div><strong>Lägg till</strong><br><span class="small">Sparar raden i månadsöversikten. Du kan ändra eller ta bort när som helst.</span></div></div>
+</section>
+
+<section class="card">
+  <div class="section-title"><span class="badge">📊</span><strong>Balans & färglogik</strong></div>
+  <p class="small">Systemet analyserar dagarna enligt följande regler:</p>
+  <ul class="small">
+    <li><span style="color:var(--ok)">✅ Grön:</span> 8 h Ordinarie eller balans ex. 6 Ord + 2 Flex</li>
+    <li><span style="color:var(--ok)">✅ Grön:</span> -8 Flex/ATF/Semester utan Ord (= godkänd dag)</li>
+    <li><span style="color:var(--warn)">🟠 Orange:</span> Delvis Ord + VAB/Sjuk – under 8 h Ordinarie</li>
+    <li><span style="color:var(--danger)">🔴 Röd:</span> Ofullständig eller saknad registrering vardag</li>
+  </ul>
+  <div class="callout ok"><strong>Exempel:</strong><br>8 Ord = ✅ Grön  | 6 Ord + 2 Flex = ✅ Grön  | 6 Ord + 2 VAB = 🟠 Orange</div>
+</section>
+
+<section class="card">
+  <div class="section-title"><span class="badge">🔍</span><strong>Sök & filter</strong></div>
+  <p class="small">Under fliken <em>Sök</em> kan du söka i alla månader och år efter datum, projekt, kategori eller text i beskrivningen. Resultaten visas i en tabell med möjlighet att exportera eller dela som CSV.</p>
+</section>
+
+<section class="card">
+  <div class="section-title"><span class="badge">📤</span><strong>Export & Dela</strong></div>
+  <p class="small">Månads- och årsrapporter kan exporteras som CSV (UTF-16 BOM) eller PDF (A3 liggande). Mail-ämnesraden genereras automatiskt t.ex. <em>”Martin Mattsson Tidrapport 2025 September”</em>.</p>
+</section>
+
+<section class="card">
+  <div class="section-title"><span class="badge">☁️</span><strong>Backup & återställning</strong></div>
+  <p class="small">Snabbbackup sparar all data och inställningar till en JSON-fil. Auto-backup kan aktiveras i inställningar för timvis säkerhetskopia.</p>
+</section>
+
+<section class="card">
+  <div class="section-title"><span class="badge">⚙️</span><strong>Inställningar</strong></div>
+  <p class="small">Fyll i företag, namn, anst.nr, ägare-ID, år och valfri notering. Aktivera auto-backup om du vill att programmet ska spara automatiskt.</p>
+</section>
+
+<section class="card">
+  <div class="section-title"><span class="badge">📲</span><strong>Installera som app</strong></div>
+  <p class="small">På Android väljer du <em>Installera app</em> i Chrome-menyn. På iPhone använder du <em>Dela → Lägg till på hemskärmen</em>. Appen startar utan adressfält och fungerar offline.</p>
+</section>
+
+<div class="footer-note">
+  🔨 Byggd i samarbete med <strong>ChatGPT &amp; Martin Mattsson</strong>
+</div>
+
+</main>
+</body>
+</html>
