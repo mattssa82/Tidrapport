@@ -1,0 +1,87 @@
+<!-- ===== help.html ===== -->
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hjälp – Tidrapport</title>
+  <link rel="stylesheet" href="style.css">
+  <meta name="theme-color" content="#0e6677">
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 0; padding: 1.5rem; background: #f9fafb; color: #1f2937; }
+    h1, h2, h3 { color: #0e6677; margin-top: 1.5rem; }
+    p { margin: .5rem 0 1rem; line-height: 1.5; }
+    ul { margin: .5rem 0 1rem 1.5rem; }
+    .icon { display: inline-flex; align-items: center; gap:.4rem; }
+    .icon span { font-weight: 500; }
+    .pill { display: inline-flex; align-items:center; gap:.3rem; border-radius:999px; padding:.15rem .55rem; font-size:.85rem; }
+    .rose { background:#fee2e2; color:#991b1b; }
+    .blue { background:#dbeafe; color:#1e40af; }
+    .green { background:#dcfce7; color:#166534; }
+    footer { margin-top:3rem; font-size:.85rem; color:#6b7280; text-align:center; }
+  </style>
+</head>
+<body>
+
+  <h1>ℹ️ Hjälp & Manual</h1>
+  <p><strong>Tidrapport</strong> hjälper dig hålla reda på arbetad tid, projekt, flextid och frånvaro under året.
+  Appen fungerar både offline och på mobil, surfplatta eller dator.</p>
+
+  <h2>🧭 Navigering</h2>
+  <ul>
+    <li><strong>📅 Månad:</strong> visar aktuell månad med alla rader.</li>
+    <li><strong>📆 År:</strong> sammanställning med totaler per månad.</li>
+    <li><strong>🔍 Sök:</strong> sök bland alla rader under året – filtrera, exportera eller dela resultatet.</li>
+    <li><strong>📤 Export:</strong> exportera rapporter till <em>CSV</em> eller <em>PDF (A3)</em>.</li>
+    <li><strong>📥 Import:</strong> importera sparade filer (CSV eller JSON-backup).</li>
+    <li><strong>⚙️ Inställningar:</strong> ange företagsdata, år, auto-backup m.m.</li>
+    <li><strong>☁️ Backup:</strong> skapa eller dela snabbbackup (JSON).</li>
+  </ul>
+
+  <h2>📏 Balansregler</h2>
+  <ul>
+    <li>Vardagar kräver <strong>minst 8h ordinarie tid</strong> för att markeras som gröna (OK).</li>
+    <li><span class="pill orange">Under 8h</span> = dag med färre timmar än 8h.</li>
+    <li><span class="pill red">Saknas</span> = ingen registrering.</li>
+    <li><span class="pill blue">Helg</span> = lör/sön. Visas som blå, registrering möjlig.</li>
+    <li><span class="pill rose">Röd dag</span> = automatisk 8h om aktiverat i inställningar.</li>
+    <li><strong>Röda dagar:</strong> definieras automatiskt efter svenska helgdagar.</li>
+  </ul>
+
+  <h2>💾 Backup & Import</h2>
+  <ul>
+    <li>Backup sker automatiskt om “Auto-backup” är aktiverad.</li>
+    <li>Manuell backup/delning via <strong>☁️ Backup</strong> i menyn.</li>
+    <li>Importera tidigare data från JSON- eller CSV-fil via <strong>📥 Import</strong>.</li>
+    <li>Auto-backup sparas lokalt i webbläsaren (offline).</li>
+  </ul>
+
+  <h2>📄 Export</h2>
+  <ul>
+    <li>Exportera till CSV (UTF-16LE, kompatibelt med Excel).</li>
+    <li>PDF-export sker i A3-landskap för tydligare tabeller.</li>
+    <li>Du kan dela rapporter direkt via e-post, AirDrop eller andra appar.</li>
+  </ul>
+
+  <h2>📱 Mobil & Offline-stöd</h2>
+  <p>Tidrapport fungerar som en PWA – du kan installera den på mobilen för full offline-funktion.
+  För att installera, välj <em>“Lägg till på startskärmen”</em> i webbläsarmenyn.</p>
+
+  <h2>🛠️ Inställningar</h2>
+  <ul>
+    <li><strong>🏢 Företag:</strong> visas i rapporter.</li>
+    <li><strong>👤 Namn:</strong> används i mail-ämnesrad och PDF.</li>
+    <li><strong>🆔 Anst.nr:</strong> för identifiering.</li>
+    <li><strong>🔑 Ägar-ID:</strong> intern identifierare (valfritt).</li>
+    <li><strong>📅 År:</strong> aktuellt arbetsår.</li>
+    <li><strong>📝 Noteringar:</strong> extra information som skrivs ut i rapporterna.</li>
+    <li><strong>🔄 Auto-backup:</strong> säkerhetskopierar automatiskt lokalt.</li>
+    <li><strong>📅 Röddag timmar:</strong> standardvärde (def. 8h, kan ändras).</li>
+  </ul>
+
+  <footer>
+    Tidrapport © 2025 – byggd tillsammans med ChatGPT & Martin Mattsson.<br>
+    Version 2.0 (inkl. sök, balansregler, röd-dagslogik & mobilstöd)
+  </footer>
+</body>
+</html>
