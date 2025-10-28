@@ -1,0 +1,91 @@
+<!-- ===== help.html ===== -->
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Hjälp – Tidrapport</title>
+  <meta name="theme-color" content="#0e6677" />
+  <link rel="icon" href="icon-192.png" />
+  <style>
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+         margin:0;padding:1.5rem;background:#f9fafb;color:#1f2937;line-height:1.5}
+    h1,h2,h3{color:#0e6677;margin-top:1.5rem}
+    h1{display:flex;align-items:center;gap:.5rem}
+    h1 span{font-size:1.4rem}
+    p{margin:.5rem 0 1rem}
+    ul{margin:.5rem 0 1rem 1.5rem}
+    li{margin-bottom:.3rem}
+    .pill{display:inline-flex;align-items:center;gap:.3rem;border-radius:999px;
+          padding:.15rem .55rem;font-size:.85rem;font-weight:600}
+    .rose{background:#fee2e2;color:#991b1b}
+    .blue{background:#dbeafe;color:#1e40af}
+    .orange{background:#ffedd5;color:#7c2d12}
+    .gray{background:#e5e7eb;color:#374151}
+    footer{margin-top:3rem;font-size:.85rem;color:#6b7280;text-align:center}
+    .backbtn{position:fixed;top:1rem;right:1rem;background:#0e6677;color:#fff;
+             border:0;border-radius:.6rem;padding:.5rem 1rem;font-weight:600;cursor:pointer}
+  </style>
+</head>
+<body>
+  <button class="backbtn" onclick="history.back()">✕ Stäng</button>
+
+  <h1><span>ℹ️</span> Hjälp & Manual</h1>
+  <p><strong>Tidrapport</strong> hjälper dig att hålla koll på arbetstid, projekt,
+     flextid och frånvaro under året. Appen fungerar även offline på mobil,
+     surfplatta och dator (PWA).</p>
+
+  <h2>🧭 Navigering</h2>
+  <ul>
+    <li><b>📅 Månad:</b> visar aktuell månad med alla rader.</li>
+    <li><b>📆 År:</b> sammanställning med totaler per månad.</li>
+    <li><b>🔍 Sök:</b> filtrera, exportera eller dela sökresultat.</li>
+    <li><b>📤 Export:</b> CSV eller PDF (A3 landskap).</li>
+    <li><b>📥 Import:</b> läs in CSV eller backup (JSON).</li>
+    <li><b>⚙️ Inställningar:</b> företagsdata, år, auto-backup m.m.</li>
+  </ul>
+
+  <h2>⚖️ Balansregler</h2>
+  <ul>
+    <li>Vardagar kräver minst <b>8 h ordinarie tid</b> för att markeras som OK.</li>
+    <li><span class="pill orange">Under 8 h</span> = för få timmar.</li>
+    <li><span class="pill gray">Helg</span> = lör/sön – ej krav.</li>
+    <li><span class="pill rose">Röd dag</span> = automatisk 8 h om aktiverat.</li>
+  </ul>
+
+  <h2>💾 Backup & Import</h2>
+  <ul>
+    <li>Auto-backup körs vid sparande/inmatning (ej var 5 min).</li>
+    <li>Manuell backup via ☁️ Backup i menyn.</li>
+    <li>Importera tidigare data från JSON eller CSV.</li>
+    <li>Backup sparas lokalt i webbläsaren (offline).</li>
+  </ul>
+
+  <h2>📄 Export</h2>
+  <ul>
+    <li>Export till CSV (UTF-16 LE + BOM, Excel-kompatibel).</li>
+    <li>PDF (A3 landskap, Helvetica-font).</li>
+    <li>Dela rapporter via e-post, AirDrop m.m.</li>
+  </ul>
+
+  <h2>📱 Mobil & Offline</h2>
+  <p>Installera Tidrapport som PWA för full offline-funktion.  
+     På Android – meny → <b>Lägg till på startskärmen</b>.</p>
+
+  <h2>🛠️ Inställningar</h2>
+  <ul>
+    <li><b>🏢 Företag</b> – visas i rapporter.</li>
+    <li><b>👤 Namn</b> – används i PDF/CSV-huvud.</li>
+    <li><b>🆔 Anst.nr</b> – identifiering.</li>
+    <li><b>🔑 Ägar-ID</b> – internt ID.</li>
+    <li><b>📅 År</b> – aktuellt arbetsår.</li>
+    <li><b>🔄 Auto-backup</b> – lokal säkerhetskopiering.</li>
+    <li><b>🎯 Röddag timmar</b> – standard (8 h som default).</li>
+  </ul>
+
+  <footer>
+    Tidrapport © 2025 – byggd tillsammans med ChatGPT & Martin Mattsson.<br/>
+    Version Vidare utv 1 – balans, röd-dag, mobilstöd, autospar.
+  </footer>
+</body>
+</html>
