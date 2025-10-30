@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Sök – Tidrapport</title>
+<link rel="icon" href="icon-512.png" />
+<script src="lucide.min.js"></script>
+<style>
+body{
+  font-family:system-ui;
+  background:#f6f7f9;
+  margin:0;
+  padding:1rem;
+  color:#1f2937;
+}
+header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  background:#0e6677;
+  color:#fff;
+  padding:.8rem 1rem;
+}
+header h1{
+  margin:0;
+  font-size:1.2rem;
+}
+button.iconbtn{
+  background:#0a515f;
+  border:0;
+  border-radius:.5rem;
+  color:#fff;
+  width:40px;
+  height:40px;
+  display:grid;
+  place-items:center;
+  cursor:pointer;
+}
+main{
+  max-width:900px;
+  margin:auto;
+  background:#fff;
+  padding:1.2rem;
+  border:1px solid #e5e7eb;
+  border-radius:.5rem;
+}
+label{
+  font-size:.85rem;
+  color:#6b7280;
+}
+input{
+  width:100%;
+  padding:.6rem;
+  border:1px solid #cbd5e1;
+  border-radius:.5rem;
+  margin-top:.5rem;
+  font-size:1rem;
+}
+ul{
+  list-style:none;
+  padding:0;
+  margin-top:1rem;
+}
+li{
+  background:#fff;
+  margin-bottom:.5rem;
+  padding:.8rem;
+  border:1px solid #e5e7eb;
+  border-radius:.5rem;
+  line-height:1.4;
+  font-size:.9rem;
+}
+li b{color:#0e6677}
+small{color:#6b7280}
+</style>
+</head>
+<body>
+<header>
+  <h1>Sök</h1>
+  <button class="iconbtn" onclick="history.back()" title="Stäng">
+    <i data-lucide='x'></i>
+  </button>
+</header>
+
+<main>
+  <label for="search">
+    Sök i datum, projekt, beskrivning, kategori, tid, körtid:
+  </label>
+  <input
+    id="search"
+    placeholder="Ex: Flextid, 2025-10-31, Traktamente, Y2506…"
+    oninput="runSearch()"
+  />
+
+  <ul id="results"></ul>
+</main>
+
+<script src="search.js"></script>
+<script>
+if(window.lucide) lucide.createIcons();
+</script>
+</body>
+</html>
