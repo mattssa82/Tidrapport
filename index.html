@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<title>Tidrapport v10.8</title>
+<meta name="theme-color" content="#0e6677" />
+<link rel="manifest" href="manifest.json" />
+<script src="lucide.min.js"></script>
+<!-- Tidrapport v10.8 | i samarbete med ChatGPT & Martin Mattsson -->
+<style>
+:root {
+  --bg-main:#f5f7f8;--bg-header:#0e6677;--bg-card:#fff;--text-main:#1a1a1a;--border-col:#cfcfcf;
+}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg-main);color:var(--text-main);}
+header.app-header{background:var(--bg-header);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:.7rem 1rem;position:sticky;top:0;z-index:10;}
+header.app-header h1{font-size:1.1rem;margin:0;font-weight:600;}
+header.app-header .inline-flex-row{display:flex;align-items:center;gap:.5rem;}
+header.app-header a{color:#fff;text-decoration:none;font-size:.9rem;display:inline-flex;align-items:center;gap:.3rem;}
+.layout{display:flex;min-height:calc(100vh - 50px);}
+aside#sidePanel{background:var(--bg-header);color:#fff;width:260px;max-width:80%;padding:1rem;box-sizing:border-box;}
+aside#sidePanel h2{font-size:.9rem;font-weight:600;margin:1rem 0 .5rem 0;}
+aside#sidePanel input,aside#sidePanel select,aside#sidePanel textarea{width:100%;padding:.4rem .5rem;border-radius:.4rem;border:1px solid rgba(255,255,255,.4);background:rgba(255,255,255,.15);color:#fff;box-sizing:border-box;}
+aside#sidePanel button.side-action{width:100%;border:0;border-radius:.4rem;padding:.5rem .6rem;font-size:.8rem;display:flex;align-items:center;gap:.4rem;cursor:pointer;font-weight:500;}
+aside#sidePanel button.side-action{background:#fff;color:var(--bg-header);}
+aside#sidePanel button.side-action.danger{background:#c0392b;color:#fff;}
+main#mainArea{flex:1;padding:1rem;box-sizing:border-box;}
+.entry-card{background:var(--bg-card);border:1px solid var(--border-col);border-radius:.6rem;padding:1rem;margin-bottom:1rem;box-shadow:0 2px 4px rgb(0 0 0 / 5%);}
+.entry-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.7rem;}
+.entry-grid label{font-size:.8rem;font-weight:500;color:#333;display:flex;flex-direction:column;gap:.3rem;}
+.entry-grid textarea{resize:vertical;min-height:3rem;}
+.inline-flex-row{display:flex;align-items:center;gap:.4rem;flex-wrap:wrap;}
+.button-row{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1rem;}
+.button-row button{border:0;border-radius:.5rem;padding:.6rem .8rem;font-size:.85rem;font-weight:500;background:var(--bg-header);color:#fff;display:flex;align-items:center;gap:.3rem;cursor:pointer;}
+.button-row .cancel-btn{background:#888;}
+.table-wrap{background:var(--bg-card);border:1px solid var(--border-col);border-radius:.6rem;overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:.8rem;min-width:800px;}
+th,td{border:1px solid var(--border-col);padding:.4rem .6rem;text-align:left;}
+th{background:#ececec;}
+tfoot td{font-weight:600;background:#fafafa;}
+.icon-table-btn{background:none;border:0;padding:.25rem;cursor:pointer;color:#0e6677;}
+.dagstatus--grön{background:#dff8dd!important;}
+.dagstatus--orange_under,.dagstatus--orange_absence{background:#fff2cc!important;}
+.dagstatus--saknas{background:#ffd6d6!important;}
+.dagstatus--helg{background:#eef3ff!important;}
+.dagstatus--röddag{background:#ffe6e6!important;}
+.year-card{margin-top:2rem;background:var(--bg-card);border:1px solid var(--border-col);border-radius:.6rem;padding:1rem;}
+@media(max-width:800px){aside#sidePanel{position:fixed;inset:0 auto 0 0;transform:translateX(-100%);transition:transform .2s ease;z-index:999;background:#0e6677;}aside#sidePanel.open{transform:translateX(0);}}
+</style>
+</head>
+<body>
+<header class="app-header">
+  <div class="inline-flex-row">
+    <button class="icon-btn" id="menuToggleBtn"><i data-lucide="menu"></i></button>
+    <h1>Tidrapport</h1>
+  </div>
+  <div class="inline-flex-row">
+    <a href="help.html" target="_blank"><i data-lucide="info"></i> Hjälp</a>
+    <a href="search.html" target="_blank"><i data-lucide="search"></i> Sök</a>
+  </div>
+</header>
+
+<div class="layout">
+  <aside id="sidePanel" aria-hidden="true">
+    <h2>Period</h2>
+    <label>År<select id="yearSelect"></select></label>
+    <label>Månad<select id="monthSelect"></select></label>
+
+    <h2>Backup / Export</h2>
+    <input type="file" id="importFileInput" accept=".json" />
+    <button class="side-action" id="manualBackupBtn"><i data-lucide="upload-cloud"></i>Backup nu</button>
+    <button class="side-action" id="exportCsvBtn"><i data-lucide="file-spreadsheet"></i>CSV</button>
+    <button class="side-action" id="exportPdfBtn"><i data-lucide="file-text"></i>PDF</button>
+    <button class="side-action" id="exportYearBtn"><i data-lucide="calendar"></i>Årsöversikt</button>
+    <button class="side-action danger" id="clearAllBtn"><i data-lucide="trash-2"></i>RENSA ALLT</button>
+
+    <h2>Inställningar</h2>
+    <label>Företag<input id="companyInput" type="text" /></label>
+    <label>Namn<input id="nameInput" type="text" /></label>
+    <label>Anst.nr<input id="anstnrInput" type="text" /></label>
+    <label>Egna röda dagar<textarea id="redDaysInput" placeholder="2025-06-06, 2025-12-26"></textarea></label>
+    <label>Timmar per röd dag<input id="redDayHoursInput" type="number" step="0.25" value="8" /></label>
+    <label><input id="showRedDaysChk" type="checkbox" /> Visa röda dagar</label>
+    <label><input id="autoBackupChk" type="checkbox" /> Auto-backup (COV)</label>
+    <button class="side-action" id="saveSettingsBtn"><i data-lucide="save"></i>Spara</button>
+    <p style="font-size:.7rem;margin-top:1rem;">v10.8 – ChatGPT &amp; Martin Mattsson</p>
+  </aside>
+
+  <main id="mainArea">
+    <section class="entry-card">
+      <div class="entry-grid">
+        <label>Datum<input id="dateInput" type="date" /></label>
+        <label>Projekt nr<input id="projektInput" type="text" /></label>
+        <label>Körtid (h)<input id="driveHoursInput" type="number" step="0.25" min="0" /></label>
+
+        <label>Kategori & tid
+          <div class="inline-flex-row">
+            <select id="catMainSelect"></select>
+            <input id="catMainHours" type="number" step="0.25" min="-24" />
+            <button id="addExtraCatBtn" class="icon-table-btn" title="Lägg till kategori"><i data-lucide="plus-circle"></i></button>
+          </div>
+        </label>
+        <div id="extraCatsContainer"></div>
+
+        <label style="grid-column:1/-1;">Dagboksanteckning<textarea id="noteInput"></textarea></label>
+      </div>
+
+      <div class="button-row">
+        <button id="saveEntryBtn"><i data-lucide="plus-circle"></i><span id="saveEntryLabel">Lägg till</span></button>
+        <button id="manualBackupBtn2"><i data-lucide="upload-cloud"></i>Backup</button>
+        <button class="cancel-btn" id="cancelEditBtn" style="display:none;"><i data-lucide="x-circle"></i>Avbryt</button>
+      </div>
+    </section>
+
+    <section class="table-wrap">
+      <table id="monthTable">
+        <thead>
+          <tr><th>Datum</th><th>Projekt</th><th>Kategori(er)</th><th>Totaltid</th><th>Körtid</th><th>Anteckning</th><th>Åtgärd</th></tr>
+        </thead>
+        <tbody id="monthTableBody"></tbody>
+        <tfoot><tr><td colspan="7" id="monthSummaryCell"></td></tr></tfoot>
+      </table>
+    </section>
+
+    <section class="year-card">
+      <h3>Årsöversikt</h3>
+      <table id="yearTable">
+        <thead><tr><th>Månad</th><th>Ordinarie</th><th>Flex</th><th>ÖT<2</th><th>ÖT>2</th><th>Helg</th><th>Semester</th><th>ATF</th><th>VAB</th><th>Sjuk</th><th>Trakt</th><th>Körtid</th></tr></thead>
+        <tbody id="yearTableBody"></tbody>
+      </table>
+    </section>
+
+    <section class="year-card">
+      <h3>Larm / obalans denna månad</h3>
+      <table id="alarmTable">
+        <thead><tr><th>Datum</th><th>Tid (h)</th><th>Status</th></tr></thead>
+        <tbody id="alarmTableBody"></tbody>
+      </table>
+    </section>
+  </main>
+</div>
+
+<script src="balansregler.js"></script>
+<script src="backup.js"></script>
+<script src="export.js"></script>
+<script src="search.js"></script>
+<script src="app.js"></script>
+<script>if(window.lucide){lucide.createIcons();}</script>
+</body>
+</html>
