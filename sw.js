@@ -1,10 +1,10 @@
 // sw.js
-// Tidrapport v10.4
+// Tidrapport v10.5
 // i samarbete med ChatGPT & Martin Mattsson
 //
 // Offline-cache (stale-while-revalidate light)
 
-const CACHE_NAME = "tidrapport-cache-v10-4";
+const CACHE_NAME = "tidrapport-cache-v10-5";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -40,7 +40,7 @@ self.addEventListener("activate", event => {
     )
   );
   self.clients.claim();
-  console.log("Service Worker v10.4 aktiv ✅");
+  console.log("Service Worker v10.5 aktiv ✅");
 });
 
 // Hämta med fallback + uppdatera cache
