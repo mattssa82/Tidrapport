@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<title>Hjälp – Tidrapport v10.11</title>
+<style>
+body{
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  line-height:1.5;
+  color:#222;
+  max-width:800px;
+  margin:2rem auto;
+  padding:0 1rem;
+}
+h1,h2,h3{color:#0e6677;}
+table{
+  border-collapse:collapse;
+  width:100%;
+  margin:1rem 0;
+  font-size:.9rem;
+}
+th,td{
+  border:1px solid #ccc;
+  padding:.4rem .6rem;
+  text-align:left;
+  vertical-align:top;
+}
+.code{
+  font-family:monospace;
+  background:#f4f4f4;
+  padding:.1rem .3rem;
+  border-radius:.2rem;
+}
+.colorbox{
+  display:inline-block;
+  width:1.5em;
+  height:1em;
+  margin-right:.3em;
+  vertical-align:middle;
+}
+.dgron{background:#dff8dd;}
+.dgul{background:#fff2cc;}
+.drod{background:#ffd6d6;}
+.dhelg{background:#eef3ff;}
+.dred{background:#ffe6e6;}
+small{color:#555;}
+</style>
+</head>
+<body>
+
+<h1>Tidrapport v10.11 – hjälp & funktioner</h1>
+<p>I samarbete med ChatGPT &amp; Martin Mattsson.</p>
+
+<h2>Syfte</h2>
+<p>
+Registrera din dag (datum, kategori, timmar, projekt, körtid och anteckning),
+se månadsvy med färgkodad status, få larm om obalans,
+och exportera till CSV/PDF eller årsöversikt.
+All data ligger lokalt i webbläsaren.
+</p>
+
+<h2>Inmatning (5 rader)</h2>
+<ol>
+  <li><b>Datum</b></li>
+  <li><b>Projekt nr</b> + <b>Körtid (h)</b> (tillåter även minus)</li>
+  <li><b>Kategori / Tid (h)</b> – flera rader. Första raden kan inte tas bort. Du kan lägga t.ex. Ordinarie tid 6h och Flextid -2h och Traktamente. Ingen kategori kan väljas dubbelt i samma sparning.</li>
+  <li>(forts kategori-rader om du klickar “Ny kategori”)</li>
+  <li><b>Dagboksanteckning</b></li>
+</ol>
+<p>
+Knappar under formuläret:
+<b>Ny kategori</b> lägger till ännu en rad,
+<b>Lägg till / Spara</b> sparar,
+<b>Avbryt</b> lämnar redigeringsläget.
+</p>
+
+<h2>Auto-backup (COV)</h2>
+<p>
+Om “Auto-backup (COV)” är ikryssad i menyn så sparas en snapshot i
+<code>localStorage</code> varje gång du ändrar något.
+Det körs bara vid ändring, inte var femte minut.
+</p>
+
+<h2>Import / Export</h2>
+<ul>
+  <li><b>Backup nu</b> – laddar ner en JSON med all data + inställningar just nu.</li>
+  <li><b>Import</b> – välj en tidigare JSON-backup så läses den in.</li>
+  <li><b>Exportera CSV</b> – per månad.</li>
+  <li><b>Exportera PDF</b> – per månad (A3 liggande). Kräver jsPDF+autoTable i sidan.</li>
+  <li><b>Exportera Årsöversikt</b> – summering per månad (Ordinarie, Körtid, Flex, ÖT<2, ÖT>2, ÖT-Helg, Semester, ATF, VAB, Sjuk, F-ledig, Trakt).</li>
+</ul>
+
+<h2>Balansregler / färger</h2>
+<p>
+Varje dag i månadslistan färgas enligt balansregler:
+</p>
+<ul>
+  <li><span class="colorbox dgron"></span><b>Grön</b> – komplett dag (ca 8h total, eller Semester/ATF/Flex som täcker hel dag).</li>
+  <li><span class="colorbox dgul"></span><b>Gul</b> – under 8h eller ren frånvaro som VAB / Sjuk / Föräldraledig.</li>
+  <li><span class="colorbox drod"></span><b>Röd</b> – vardag utan någon registrering.</li>
+  <li><span class="colorbox dhelg"></span><b>Blå</b> – helg.</li>
+  <li><span class="colorbox dred"></span><b>Rosa</b> – röd dag (egna röda dagar du lagt in i menyn).</li>
+</ul>
+
+<h3>Larm / obalans</h3>
+<p>
+Under “Larm / Obalans denna månad” får du en rad per dag som behöver åtgärd:
+</p>
+<table>
+  <tr><th>Datum</th><th>Tid (h)</th><th>Exempelstatus</th></tr>
+  <tr><td>2025-10-02</td><td>0.00</td><td>Ingen registrering</td></tr>
+  <tr><td>2025-10-03</td><td>4.00</td><td>Under 8h</td></tr>
+  <tr><td>2025-10-05</td><td>8.00</td><td>Frånvaro</td></tr>
+</table>
+<p>
+Helg och röd dag larmar inte.
+Framtida dagar larmar inte.
+</p>
+
+<h2>Offline / PWA</h2>
+<p>
+Appen använder en service worker (<code>sw.js</code>) så att du kan köra offline.
+Du kan lägga till den på hemskärmen (PWA).
+Allting sparas lokalt – inget skickas iväg automatiskt.
+</p>
+
+<small>
+Tidrapport v10.11 – i samarbete med ChatGPT &amp; Martin Mattsson
+</small>
+
+</body>
+</html>
