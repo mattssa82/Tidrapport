@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>Sök & filtrera – Tidrapport v10.15</title>
+  <script src="lucide.min.js"></script>
+  <style>
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+      background:#f5f7f8;
+      color:#222;
+    }
+    header.app-header{
+      position:sticky;
+      top:0;
+      z-index:20;
+      background:#0e6677;
+      color:#fff;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:.6rem 1rem;
+      box-shadow:0 2px 4px rgba(0,0,0,.25);
+    }
+    .header-left{
+      display:flex;
+      align-items:center;
+      gap:.5rem;
+    }
+    header h1{
+      font-size:1rem;
+      margin:0;
+      font-weight:600;
+    }
+    .icon-btn{
+      background:transparent;
+      border:0;
+      color:#fff;
+      display:flex;
+      align-items:center;
+      cursor:pointer;
+      padding:.25rem;
+    }
+    .header-link{
+      display:inline-flex;
+      align-items:center;
+      gap:.25rem;
+      color:#fff;
+      text-decoration:none;
+      font-size:.8rem;
+      padding:.25rem .4rem;
+      border-radius:.35rem;
+    }
+    .header-link:hover{
+      background:rgba(255,255,255,.12);
+    }
+    main{
+      padding:1rem;
+    }
+    .filters{
+      display:flex;
+      flex-wrap:wrap;
+      gap:.75rem;
+      align-items:flex-end;
+      margin-bottom:.5rem;
+    }
+    .filters label{
+      font-size:.8rem;
+      display:flex;
+      flex-direction:column;
+      gap:.2rem;
+    }
+    input,select{
+      padding:.4rem .6rem;
+      border-radius:.35rem;
+      border:1px solid #aaa;
+      font-size:.85rem;
+    }
+    button{
+      display:inline-flex;
+      align-items:center;
+      gap:.3rem;
+      padding:.45rem .8rem;
+      border-radius:.4rem;
+      border:0;
+      cursor:pointer;
+      background:#0e6677;
+      color:#fff;
+      font-size:.8rem;
+    }
+    .table-wrap{
+      margin-top:.5rem;
+      background:#fff;
+      border-radius:.5rem;
+      border:1px solid #ccc;
+      overflow-x:auto;
+      box-shadow:0 2px 4px rgba(0,0,0,.06);
+    }
+    table{
+      width:100%;
+      border-collapse:collapse;
+      min-width:800px;
+      font-size:.78rem;
+    }
+    th,td{
+      border:1px solid #ddd;
+      padding:.35rem .5rem;
+      text-align:left;
+      vertical-align:top;
+    }
+    th{
+      background:#ececec;
+      font-weight:600;
+      white-space:nowrap;
+    }
+    #resultCount{
+      margin-top:.25rem;
+      font-size:.8rem;
+      color:#333;
+    }
+  </style>
+</head>
+<body>
+<header class="app-header">
+  <div class="header-left">
+    <button class="icon-btn" onclick="window.location.href='index.html'" aria-label="Tillbaka">
+      <i data-lucide="arrow-left"></i>
+    </button>
+    <h1>Sök &amp; filtrera</h1>
+  </div>
+  <div>
+    <a href="help.html" class="header-link">
+      <i data-lucide="info"></i><span>Hjälp</span>
+    </a>
+  </div>
+</header>
+
+<main>
+  <div class="filters">
+    <label>År
+      <select id="yearFilter"></select>
+    </label>
+    <label>Projekt
+      <input type="text" id="projectFilter" />
+    </label>
+    <label>Text
+      <input type="text" id="textFilter" placeholder="t.ex. Sufielundskolan, VAB..." />
+    </label>
+    <button id="searchBtn">
+      <i data-lucide="search"></i><span>Sök</span>
+    </button>
+    <button id="exportBtn">
+      <i data-lucide="file-spreadsheet"></i><span>Exportera CSV</span>
+    </button>
+  </div>
+
+  <div id="resultCount"></div>
+
+  <div class="table-wrap">
+    <table id="resultTable">
+      <thead>
+        <tr>
+          <th>Datum</th>
+          <th>Projekt</th>
+          <th>Kategori</th>
+          <th>Tid (h)</th>
+          <th>Körtid (h)</th>
+          <th>Dagboksanteckning</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</main>
+
+<script src="search.js"></script>
+<script>
+if (window.lucide) lucide.createIcons();
+</script>
+</body>
+</html>

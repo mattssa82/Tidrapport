@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>Hjälp – Tidrapport v10.15</title>
+  <script src="lucide.min.js"></script>
+  <style>
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+      background:#f5f7f8;
+      color:#222;
+    }
+    header.app-header{
+      position:sticky;
+      top:0;
+      z-index:20;
+      background:#0e6677;
+      color:#fff;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:.6rem 1rem;
+      box-shadow:0 2px 4px rgba(0,0,0,.25);
+    }
+    .header-left{
+      display:flex;
+      align-items:center;
+      gap:.5rem;
+    }
+    header h1{
+      font-size:1rem;
+      margin:0;
+      font-weight:600;
+    }
+    .icon-btn{
+      background:transparent;
+      border:0;
+      color:#fff;
+      display:flex;
+      align-items:center;
+      cursor:pointer;
+      padding:.25rem;
+    }
+    main{
+      max-width:800px;
+      margin:1rem auto 2rem;
+      padding:0 1rem;
+      line-height:1.5;
+      font-size:.9rem;
+    }
+    h2{
+      color:#0e6677;
+      margin-top:1.2rem;
+      font-size:1rem;
+    }
+    ul{ padding-left:1.2rem; }
+    code{
+      font-family:monospace;
+      background:#eee;
+      padding:.1rem .25rem;
+      border-radius:.2rem;
+      font-size:.8rem;
+    }
+    table{
+      width:100%;
+      border-collapse:collapse;
+      margin:.5rem 0 1rem;
+      font-size:.8rem;
+    }
+    th,td{
+      border:1px solid #ccc;
+      padding:.3rem .5rem;
+      text-align:left;
+      vertical-align:top;
+    }
+    th{ background:#ececec; }
+    .colorbox{
+      display:inline-block;
+      width:1.4em;
+      height:.9em;
+      margin-right:.25em;
+      vertical-align:middle;
+    }
+    .dgron{background:#dff8dd;}
+    .dgul{background:#fff2cc;}
+    .drod{background:#ffd6d6;}
+    .dhelg{background:#eef3ff;}
+    .dred{background:#ffe6e6;}
+    small{color:#555;}
+  </style>
+</head>
+<body>
+<header class="app-header">
+  <div class="header-left">
+    <button class="icon-btn" onclick="window.location.href='index.html'" aria-label="Tillbaka">
+      <i data-lucide="arrow-left"></i>
+    </button>
+    <h1>Hjälp – Tidrapport</h1>
+  </div>
+</header>
+
+<main>
+  <p>
+    Tidrapport v10.15 – i samarbete med ChatGPT &amp; Martin Mattsson.
+  </p>
+
+  <h2>1. Så fyller du i</h2>
+  <ul>
+    <li><b>Datum</b> – välj dag.</li>
+    <li><b>Projekt nr</b> – t.ex. <code>Y2506</code>, <code>Firman</code>, <code>Trello</code>.</li>
+    <li><b>Körtid (h)</b> – resa den dagen. Räknas separat, ingår inte i balans.</li>
+    <li><b>Kategorier &amp; timmar</b>:
+      <ul>
+        <li>Första raden är alltid kvar.</li>
+        <li>Klicka <b>+</b> för fler rader, <b>–</b> för att ta bort extra.</li>
+        <li>Du kan inte lägga samma kategori två gånger i samma inmatning.</li>
+        <li>Exempel: <code>Ordinarie tid 6</code> + <code>Flextid 2</code>.</li>
+      </ul>
+    </li>
+    <li><b>Dagboksanteckning</b> – visas på första raden, de andra är “stöd-rader”.</li>
+  </ul>
+
+  <p>
+    När du sparar skapas en rad per kategori för vald dag.
+    Bara första raden får körtid och anteckning för att export och summering ska bli rätt.
+  </p>
+
+  <h2>2. Balans & färger (enkelt)</h2>
+  <p>Appen markerar varje vardag:</p>
+  <ul>
+    <li><span class="colorbox dgron"></span><b>Grön</b> – minst 8h effektiv arbetstid (Ordinarie + godkända kombinationer).</li>
+    <li><span class="colorbox dgul"></span><b>Gul</b> – under 8h eller ren frånvaro (t.ex. VAB, Sjuk, Föräldraledig).</li>
+    <li><span class="colorbox drod"></span><b>Röd</b> – vardag utan någon registrering.</li>
+    <li><span class="colorbox dhelg"></span><b>Blå</b> – helg, ingen varning.</li>
+    <li><span class="colorbox dred"></span><b>Rosa</b> – röd dag, ingen varning.</li>
+  </ul>
+
+  <h3>Godkända exempel</h3>
+  <table>
+    <tr><th>Exempel</th><th>Tolkning</th></tr>
+    <tr><td>Ordinarie 8h</td><td>✅ Grön</td></tr>
+    <tr><td>Ordinarie 6h + Flextid 2h</td><td>✅ Grön</td></tr>
+    <tr><td>Flextid -8h</td><td>✅ Räknas som 8h arbetstid (tar från flexbanken)</td></tr>
+    <tr><td>ATF -8h / ÖT -8h / Semester -8h</td><td>✅ Räknas som full dag</td></tr>
+    <tr><td>Sjuk / VAB / Föräldraledig 8h</td><td>🟡 Frånvaro – ingen grön</td></tr>
+  </table>
+
+  <p>
+    Traktamente räknas aldrig som tid, bara som antal.
+  </p>
+
+  <h2>3. Larm / Obalans</h2>
+  <p>
+    Under månaden visas en lista “Larm / Obalans denna månad”:
+  </p>
+  <ul>
+    <li>🔴 Ingen registrering – vardag utan rad (bara för passerade dagar).</li>
+    <li>⚠️ Under 8h – arbetad tid men inte full dag.</li>
+    <li>⚠️ Frånvaro – t.ex. bara VAB/Sjuk/Föräldraledig.</li>
+    <li>Helger och röda dagar ger aldrig larm.</li>
+  </ul>
+
+  <h2>4. Röda dagar</h2>
+  <ul>
+    <li>Svenska röda dagar hanteras automatiskt.</li>
+    <li>I inställningar väljer du standard <b>Röddag timmar</b> (t.ex. 8h) som används i balansen.</li>
+    <li>Röda dagar utan registrering räknas som OK och ger inget rött larm.</li>
+  </ul>
+
+  <h2>5. Backup & export</h2>
+  <ul>
+    <li><b>Backup nu</b> – laddar ner JSON med all data.</li>
+    <li><b>Auto-backup</b> – om ikryssad sparas automatiskt vid ändringar (inte hela tiden).</li>
+    <li><b>Importera JSON</b> – läser in tidigare backup.</li>
+    <li><b>Exportera CSV/PDF</b> – per månad.</li>
+    <li><b>Årsöversikt</b> – summerar per månad (Ordinarie, Körtid, Flex, ÖT, Semester, ATF, VAB, Sjuk, Föräldraledig, Trakt).</li>
+  </ul>
+
+  <h2>6. Sök & filtrera</h2>
+  <p>
+    Via Sök kan du filtrera på år, projekt och text (t.ex. “Sufielundskolan” eller “Gateway”)
+    och exportera resultat till CSV.
+  </p>
+
+  <h2>7. Offline</h2>
+  <p>
+    Appen fungerar offline via service worker. All data ligger i din webbläsare.
+  </p>
+
+  <small>
+    Tidrapport v10.15 – i samarbete med ChatGPT &amp; Martin Mattsson
+  </small>
+</main>
+
+<script>
+if (window.lucide) lucide.createIcons();
+</script>
+</body>
+</html>
