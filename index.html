@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="utf-8" />
+  <title>Tidrapport v10.17</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0e6677" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="icons/icon-192.png" />
+
+  <!-- lucide icons -->
+  <script src="lucide.min.js"></script>
+
+  <!--
+    Tidrapport v10.17
+    i samarbete med ChatGPT & Martin Mattsson
+  -->
+
+  <style>
+    :root{
+      --bg-main:#f5f7f8;
+      --bg-header:#0e6677;
+      --bg-card:#ffffff;
+      --text-main:#1a1a1a;
+      --border-col:#cfcfcf;
+      --danger:#c0392b;
+    }
+
+    *{box-sizing:border-box;}
+
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+      background:var(--bg-main);
+      color:var(--text-main);
+    }
+
+    /* HEADER */
+    header.app-header{
+      position:sticky;
+      top:0;
+      z-index:50;
+      background:var(--bg-header);
+      color:#fff;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:.6rem 1rem;
+      box-shadow:0 2px 4px rgba(0,0,0,.15);
+    }
+    .header-left{
+      display:flex;
+      align-items:center;
+      gap:.6rem;
+    }
+    .header-title{
+      display:flex;
+      flex-direction:column;
+    }
+    .header-title span:first-child{
+      font-size:1.05rem;
+      font-weight:600;
+      line-height:1.2;
+    }
+    .header-title span:last-child{
+      font-size:.7rem;
+      opacity:.8;
+    }
+    .icon-btn{
+      background:transparent;
+      border:0;
+      color:#fff;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:.25rem;
+      cursor:pointer;
+    }
+    .header-actions{
+      display:flex;
+      align-items:center;
+      gap:.4rem;
+    }
+    .header-link{
+      display:inline-flex;
+      align-items:center;
+      gap:.25rem;
+      padding:.2rem .45rem;
+      border-radius:.4rem;
+      text-decoration:none;
+      font-size:.78rem;
+      color:#fff;
+      background:rgba(255,255,255,.08);
+    }
+    .header-link span{margin-top:1px;}
+
+    /* LAYOUT */
+    .layout{
+      display:flex;
+      min-height:calc(100vh - 52px);
+    }
+
+    /* SIDEPANEL */
+    aside#sidePanel{
+      width:260px;
+      padding:1rem;
+      background:var(--bg-header);
+      color:#fff;
+    }
+    aside h2{
+      font-size:.85rem;
+      font-weight:600;
+      margin:1rem 0 .3rem;
+    }
+    aside label{
+      display:block;
+      font-size:.75rem;
+      margin-bottom:.4rem;
+    }
+    aside input,
+    aside select,
+    aside textarea{
+      width:100%;
+      font-size:.8rem;
+      padding:.35rem .45rem;
+      border-radius:.35rem;
+      border:1px solid rgba(255,255,255,.4);
+      background:rgba(255,255,255,.14);
+      color:#fff;
+    }
+    aside textarea{
+      resize:vertical;
+      min-height:3rem;
+    }
+    aside .inline-flex{
+      display:flex;
+      align-items:center;
+      gap:.35rem;
+      font-size:.75rem;
+      margin:.25rem 0;
+    }
+    .side-buttons{
+      display:grid;
+      gap:.35rem;
+      margin:.4rem 0 .6rem;
+    }
+    .side-action{
+      display:flex;
+      align-items:center;
+      gap:.35rem;
+      width:100%;
+      padding:.4rem .5rem;
+      border-radius:.35rem;
+      border:0;
+      font-size:.78rem;
+      cursor:pointer;
+      background:#fff;
+      color:var(--bg-header);
+      font-weight:500;
+      text-align:left;
+    }
+    .side-action.danger{
+      background:var(--danger);
+      color:#fff;
+    }
+    .side-footer{
+      font-size:.65rem;
+      opacity:.8;
+      margin-top:.5rem;
+      line-height:1.4;
+    }
+
+    /* MAIN */
+    main#mainArea{
+      flex:1;
+      padding:1rem;
+      min-width:0;
+    }
+
+    /* FORM-KORT */
+    .entry-card{
+      background:var(--bg-card);
+      border:1px solid var(--border-col);
+      border-radius:.65rem;
+      padding:.9rem;
+      margin-bottom:1rem;
+      box-shadow:0 2px 4px rgba(0,0,0,.06);
+    }
+    .entry-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+      gap:.6rem;
+      align-items:flex-start;
+    }
+    .entry-label{
+      display:flex;
+      flex-direction:column;
+      gap:.25rem;
+      font-size:.78rem;
+      color:#444;
+    }
+    .entry-label span{
+      font-weight:500;
+    }
+    .entry-input,
+    .entry-select,
+    .entry-textarea{
+      font-size:.85rem;
+      padding:.45rem .55rem;
+      border-radius:.4rem;
+      border:1px solid #aaa;
+      background:#fff;
+      color:#000;
+      width:100%;
+    }
+    .entry-textarea{
+      resize:vertical;
+      min-height:3rem;
+    }
+    .cat-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:.35rem;
+      align-items:center;
+    }
+    .cat-row select{
+      min-width:130px;
+    }
+    .cat-row input[type="number"]{
+      width:90px;
+    }
+    .cat-extra-remove{
+      background:none;
+      border:0;
+      padding:.15rem;
+      display:inline-flex;
+      align-items:center;
+      cursor:pointer;
+      color:var(--danger);
+    }
+    .add-cat-btn{
+      display:inline-flex;
+      align-items:center;
+      gap:.2rem;
+      padding:.2rem .45rem;
+      font-size:.7rem;
+      border-radius:.35rem;
+      border:1px dashed #999;
+      background:#fafafa;
+      cursor:pointer;
+      margin-top:.2rem;
+    }
+
+    .button-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:.5rem;
+      margin-top:.7rem;
+    }
+    .button-row button{
+      display:inline-flex;
+      align-items:center;
+      gap:.3rem;
+      padding:.5rem .8rem;
+      border-radius:.45rem;
+      border:0;
+      font-size:.8rem;
+      font-weight:500;
+      cursor:pointer;
+      background:var(--bg-header);
+      color:#fff;
+    }
+    .button-row .cancel-btn{
+      background:#888;
+    }
+
+    /* TABELL */
+    .table-wrap{
+      background:var(--bg-card);
+      border:1px solid var(--border-col);
+      border-radius:.65rem;
+      box-shadow:0 2px 4px rgba(0,0,0,.05);
+      margin-bottom:1rem;
+      overflow-x:auto;
+    }
+    table{
+      width:100%;
+      border-collapse:collapse;
+      font-size:.78rem;
+      min-width:800px;
+    }
+    thead th{
+      background:#ececec;
+      padding:.4rem .5rem;
+      text-align:left;
+      font-weight:600;
+      border-bottom:1px solid var(--border-col);
+      white-space:nowrap;
+    }
+    tbody td{
+      padding:.4rem .5rem;
+      border-top:1px solid var(--border-col);
+      vertical-align:top;
+      word-break:break-word;
+    }
+    tfoot td{
+      padding:.45rem .5rem;
+      border-top:2px solid var(--border-col);
+      font-weight:600;
+      background:#fafafa;
+    }
+    .icon-table-btn{
+      background:none;
+      border:0;
+      padding:.15rem .25rem;
+      border-radius:.3rem;
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      color:var(--bg-header);
+    }
+    .icon-table-btn.delete{
+      color:var(--danger);
+    }
+
+    /* DAGSTATUS-FÄRGER */
+    .dagstatus--grön{ background:#dff8dd !important; }
+    .dagstatus--orange_under,
+    .dagstatus--orange_absence{ background:#fff2cc !important; }
+    .dagstatus--saknas{ background:#ffd6d6 !important; }
+    .dagstatus--helg{ background:#eef3ff !important; }
+    .dagstatus--röddag{ background:#ffe6e6 !important; }
+
+    /* LARM / OBALANS */
+    .alarm-card{
+      margin:1rem 0;
+      background:var(--bg-card);
+      border:1px solid var(--border-col);
+      border-radius:.65rem;
+      box-shadow:0 2px 4px rgba(0,0,0,.05);
+      overflow:hidden;
+    }
+    .alarm-header{
+      display:flex;
+      align-items:center;
+      gap:.4rem;
+      padding:.45rem .6rem;
+      background:#fff7e6;
+      border-bottom:1px solid #f0e0b8;
+      font-size:.78rem;
+      font-weight:600;
+      color:#8a5a00;
+    }
+    .alarm-body{
+      max-height:220px;
+      overflow-y:auto;
+    }
+    .alarm-table{
+      width:100%;
+      border-collapse:collapse;
+      font-size:.72rem;
+    }
+    .alarm-table th,
+    .alarm-table td{
+      padding:.25rem .4rem;
+      border-bottom:1px solid #eee;
+      text-align:left;
+      white-space:nowrap;
+    }
+    .alarm-icon-ok{ color:#2ecc71; }
+    .alarm-icon-warn{ color:#f39c12; }
+    .alarm-icon-err{ color:#e74c3c; }
+
+    /* ÅRSÖVERSIKT */
+    .year-card{
+      margin:1rem 0 1.5rem;
+      background:var(--bg-card);
+      border:1px solid var(--border-col);
+      border-radius:.65rem;
+      box-shadow:0 2px 4px rgba(0,0,0,.05);
+      padding:.8rem;
+      overflow-x:auto;
+    }
+    .year-card h3{
+      margin:0 0 .5rem;
+      font-size:.85rem;
+      font-weight:600;
+      color:#222;
+    }
+    #yearTable{
+      min-width:900px;
+      font-size:.75rem;
+    }
+    #yearTable th,
+    #yearTable td{
+      padding:.35rem .45rem;
+      border-top:1px solid var(--border-col);
+      text-align:left;
+      white-space:nowrap;
+    }
+    #yearTable thead th{
+      background:#ececec;
+      font-weight:600;
+      border-bottom:1px solid var(--border-col);
+    }
+
+    /* MOBIL MENY */
+    @media(max-width:800px){
+      .layout{
+        flex-direction:column;
+      }
+      aside#sidePanel{
+        position:fixed;
+        inset:52px auto 0 0;
+        height:calc(100vh - 52px);
+        max-width:80%;
+        transform:translateX(-100%);
+        transition:transform .2s ease;
+        box-shadow:2px 0 10px rgba(0,0,0,.45);
+        z-index:60;
+        overflow-y:auto;
+      }
+      aside#sidePanel.open{
+        transform:translateX(0%);
+      }
+      main#mainArea{
+        padding:.7rem;
+      }
+    }
+  </style>
+</head>
+<body>
+<header class="app-header">
+  <div class="header-left">
+    <button class="icon-btn" id="menuToggleBtn" aria-label="Meny" aria-expanded="false">
+      <i data-lucide="menu"></i>
+    </button>
+    <div class="header-title">
+      <span>Tidrapport</span>
+      <span>v10.17 · i samarbete med ChatGPT &amp; Martin Mattsson</span>
+    </div>
+  </div>
+  <div class="header-actions">
+    <a class="header-link" href="search.html">
+      <i data-lucide="search"></i><span>Sök</span>
+    </a>
+    <a class="header-link" href="help.html">
+      <i data-lucide="info"></i><span>Hjälp</span>
+    </a>
+  </div>
+</header>
+
+<div class="layout">
+  <!-- SIDOPANEL -->
+  <aside id="sidePanel" aria-hidden="true">
+    <h2>Period</h2>
+    <label>År
+      <select id="yearSelect"></select>
+    </label>
+    <label>Månad
+      <select id="monthSelect"></select>
+    </label>
+
+    <h2>Backup / Import / Export</h2>
+    <div class="side-buttons">
+      <input type="file" id="importFileInput" accept=".json" />
+      <button class="side-action" id="manualBackupBtn">
+        <i data-lucide="upload-cloud"></i><span>Backup nu (JSON)</span>
+      </button>
+      <button class="side-action" id="exportCsvBtn">
+        <i data-lucide="file-spreadsheet"></i><span>Exportera månad (CSV)</span>
+      </button>
+      <button class="side-action" id="exportPdfBtn">
+        <i data-lucide="file-text"></i><span>Exportera månad (PDF)</span>
+      </button>
+      <button class="side-action" id="exportYearBtn">
+        <i data-lucide="calendar"></i><span>Exportera årsöversikt (CSV)</span>
+      </button>
+    </div>
+
+    <h2>Inställningar</h2>
+    <label>Företag
+      <input id="companyInput" type="text" />
+    </label>
+    <label>Namn
+      <input id="nameInput" type="text" />
+    </label>
+    <label>Anst.nr
+      <input id="anstnrInput" type="text" />
+    </label>
+
+    <label>Egna röda dagar (komma-separerade, YYYY-MM-DD)
+      <textarea id="redDaysInput"></textarea>
+    </label>
+
+    <div class="inline-flex">
+      <input id="showRedDaysChk" type="checkbox" />
+      <span>Visa röda dagar i kalendern</span>
+    </div>
+
+    <div class="inline-flex">
+      <input id="autoBackupChk" type="checkbox" />
+      <span>Auto-backup (vid ändring)</span>
+    </div>
+
+    <button class="side-action" id="saveSettingsBtn">
+      <i data-lucide="save"></i><span>Spara inställningar</span>
+    </button>
+
+    <button class="side-action danger" id="clearAllBtn">
+      <i data-lucide="trash-2"></i><span>Rensa ALL data</span>
+    </button>
+
+    <div class="side-footer">
+      Tidrapport v10.17<br/>
+      All data sparas lokalt i din webbläsare.
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main id="mainArea">
+
+    <!-- FORM -->
+    <section class="entry-card">
+      <div class="entry-grid">
+
+        <!-- Rad 1: Datum -->
+        <label class="entry-label" style="grid-column:1/-1;">
+          <span>Datum</span>
+          <input id="dateInput" type="date" class="entry-input" />
+        </label>
+
+        <!-- Rad 2: Projekt + Körtid -->
+        <label class="entry-label">
+          <span>Projekt nr</span>
+          <input id="projektInput" type="text" class="entry-input" />
+        </label>
+        <label class="entry-label">
+          <span>Körtid (h)</span>
+          <input id="driveHoursInput" type="number" step="0.25" class="entry-input" />
+        </label>
+
+        <!-- Rad 3: Kategorier -->
+        <div class="entry-label" style="grid-column:1/-1;">
+          <span>Kategori &amp; tid (h)</span>
+          <div id="catRowsContainer"></div>
+          <button type="button" id="addCatRowBtn" class="add-cat-btn">
+            <i data-lucide="plus-circle"></i><span>Lägg till kategori</span>
+          </button>
+        </div>
+
+        <!-- Rad 5: Dagbok -->
+        <label class="entry-label" style="grid-column:1/-1;">
+          <span>Dagboksanteckning</span>
+          <textarea id="noteInput" class="entry-textarea"></textarea>
+        </label>
+      </div>
+
+      <div class="button-row">
+        <button id="saveEntryBtn">
+          <i data-lucide="plus-circle"></i>
+          <span id="saveEntryLabel">Lägg till</span>
+        </button>
+        <button id="manualBackupBtn2">
+          <i data-lucide="upload-cloud"></i>
+          <span>Backup nu</span>
+        </button>
+        <button class="cancel-btn" id="cancelEditBtn" style="display:none;">
+          <i data-lucide="x-circle"></i>
+          <span>Avbryt</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- MÅNADS-TABELL -->
+    <section class="table-wrap">
+      <table id="monthTable">
+        <thead>
+          <tr>
+            <th>Datum</th>
+            <th>Projekt</th>
+            <th>Kategori</th>
+            <th>Tid (h)</th>
+            <th>Körtid (h)</th>
+            <th>Dagboksanteckning</th>
+            <th>Åtgärd</th>
+          </tr>
+        </thead>
+        <tbody id="monthTableBody"></tbody>
+        <tfoot>
+          <tr>
+            <td colspan="7" id="monthSummaryCell"></td>
+          </tr>
+        </tfoot>
+      </table>
+    </section>
+
+    <!-- LARM / OBALANS -->
+    <section class="alarm-card">
+      <div class="alarm-header">
+        <i data-lucide="alert-triangle"></i>
+        <span>Larm / Obalans denna månad (endast passerade vardagar)</span>
+      </div>
+      <div class="alarm-body">
+        <table class="alarm-table">
+          <thead>
+            <tr>
+              <th>Datum</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="alarmBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ÅRSÖVERSIKT -->
+    <section class="year-card">
+      <h3>Årsöversikt</h3>
+      <table id="yearTable">
+        <thead>
+          <tr>
+            <th>Månad</th>
+            <th>Ordinarie</th>
+            <th>Körtid</th>
+            <th>Flex</th>
+            <th>ÖT &lt;2</th>
+            <th>ÖT &gt;2 / Helg</th>
+            <th>Semester</th>
+            <th>ATF</th>
+            <th>VAB</th>
+            <th>Sjuk</th>
+            <th>FL</th>
+            <th>Trakt</th>
+          </tr>
+        </thead>
+        <tbody id="yearTableBody"></tbody>
+      </table>
+    </section>
+
+  </main>
+</div>
+
+<!-- ORDNING VIKTIG -->
+<script src="balansregler.js"></script>
+<script src="backup.js"></script>
+<script src="export.js"></script>
+<script src="app.js"></script>
+<script>
+  if(window.lucide){ lucide.createIcons(); }
+</script>
+</body>
+</html>
