@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>Hjälp – Tidrapport v10.18</title>
+  <link rel="icon" href="icons/icon-192.png" />
+  <style>
+    body{
+      font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+      line-height:1.5;
+      color:#222;
+      max-width:900px;
+      margin:0 auto;
+      padding:1.2rem 1rem 2rem;
+      background:#f5f7f8;
+    }
+    h1,h2,h3{color:#0e6677;}
+    ul{padding-left:1.1rem;}
+    code{font-family:monospace;background:#eee;padding:0 .25rem;border-radius:.2rem;}
+    table{border-collapse:collapse;width:100%;margin:1rem 0;font-size:.85rem;}
+    th,td{border:1px solid #ccc;padding:.3rem .45rem;text-align:left;vertical-align:top;}
+    th{background:#ececec;}
+    .colorbox{display:inline-block;width:1.2em;height:.9em;margin-right:.25em;vertical-align:middle;}
+    .dgron{background:#dff8dd;}
+    .dgul{background:#fff2cc;}
+    .drod{background:#ffd6d6;}
+    .dhelg{background:#eef3ff;}
+    .dred{background:#ffe6e6;}
+    small{color:#666;}
+    a{color:#0e6677;}
+  </style>
+</head>
+<body>
+
+<h1>Tidrapport v10.18 – hjälp</h1>
+<p>I samarbete med ChatGPT &amp; Martin Mattsson.</p>
+
+<h2>Syfte</h2>
+<p>
+  En enkel PWA där du:
+</p>
+<ul>
+  <li>Registrerar <b>datum</b>, <b>kategori</b>, <b>timmar</b>, <b>projekt</b>, <b>körtid</b> och <b>anteckning</b>.</li>
+  <li>Ser månadslista med färgkodad status.</li>
+  <li>Får larm om saknad/otillräcklig tid på vardagar som passerat.</li>
+  <li>Exporterar månad eller årsöversikt till CSV/PDF.</li>
+  <li>All data stannar lokalt i webbläsaren.</li>
+</ul>
+
+<h2>Inmatning</h2>
+<ul>
+  <li><b>Datum</b> – välj dag.</li>
+  <li><b>Projekt nr</b> – t.ex. Y2506, Firman.</li>
+  <li><b>Körtid (h)</b> – res/körning. Visas på första raden i gruppen.</li>
+  <li><b>Kategori 1</b> – huvudrad (t.ex. Ordinarie tid 8).</li>
+  <li><b>Extra kategori 2/3</b> – fler rader samma dag (t.ex. Flextid, Traktamente).</li>
+  <li><b>Dagboksanteckning</b> – läggs på första raden i gruppen.</li>
+</ul>
+<p>
+  En inmatning kan skapa flera rader för samma datum/projekt (delad dag). Alla rader i gruppen kan redigeras tillsammans.
+</p>
+
+<h2>Balansregler (kortfattat)</h2>
+<ul>
+  <li><b>Mål:</b> Vardag ≈ 8 h arbetstid.</li>
+  <li><b>Ordinarie tid</b> räknas rakt av.</li>
+  <li><b>Flex/ATF/ÖT/Semester</b>:
+    <ul>
+      <li>Positiva timmar → läggs till arbetstiden.</li>
+      <li>Negativa timmar (t.ex. <code>-2 Flextid</code>) → tolkas som uttag = +2 h arbetad dag i balansen.</li>
+    </ul>
+  </li>
+  <li><b>VAB/Sjuk/Föräldraledig</b> → frånvaro, ger inte grön dag.</li>
+  <li><b>Traktamente</b> → räknas som antal, påverkar inte timmar.</li>
+</ul>
+
+<h3>Kombinationsregler</h3>
+<ul>
+  <li><b>Ordinarie tid + negativa Flex/ATF/ÖT/Semester</b> i samma inmatning är <b>inte tillåtet</b> → appen varnar.</li>
+  <li><b>Ordinarie tid</b> kan inte kombineras i samma inmatning med <b>VAB/Sjuk/Föräldraledig</b>.</li>
+  <li>Gör istället fler inmatningar för samma datum.</li>
+</ul>
+
+<h2>Färgkoder i månadslistan</h2>
+<ul>
+  <li><span class="colorbox dgron"></span><b>Grön</b> – dagen är komplett (≥ 8 h effektiv tid).</li>
+  <li><span class="colorbox dgul"></span><b>Gul</b> – under 8 h arbetad tid.</li>
+  <li><span class="colorbox drod"></span><b>Röd</b> – vardag utan registrering.</li>
+  <li><span class="colorbox dhelg"></span><b>Blå</b> – helg (informativ, inget larm).</li>
+  <li><span class="colorbox dred"></span><b>Rosa</b> – markerad som röddag via inställning (inget larm om tom).</li>
+</ul>
+
+<h2>Larm / Obalans</h2>
+<p>
+  Under månadslistan visas “Larm / Obalans denna månad”. Här listas:
+</p>
+<ul>
+  <li>Vardagar som passerat utan registrering.</li>
+  <li>Vardagar med registrering men under 8 h effektiv tid.</li>
+  <li>Helger och röda dagar <b>ignoreras</b> i larmet.</li>
+</ul>
+
+<h2>Röda dagar</h2>
+<ul>
+  <li>I menyn kan du ange egna datum (YYYY-MM-DD) som röda dagar.</li>
+  <li>Om “Visa röda dagar” är ikryssad:
+    <ul>
+      <li>Dessa datum markeras separat i vyn.</li>
+      <li>Tomma röda dagar räknas inte som fel i larmet.</li>
+    </ul>
+  </li>
+  <li><b>Standard röddag (h)</b> används i balansregler om du väljer att lägga in röddagen som rad manuellt.</li>
+</ul>
+
+<h2>Backup & Export</h2>
+<ul>
+  <li><b>Auto-backup</b> – om aktiverad sparas snapshot i localStorage vid ändring.</li>
+  <li><b>Backup nu</b> – laddar ner JSON med all data + inställningar.</li>
+  <li><b>Import</b> – läser in tidigare backup (nytt & gammalt format).</li>
+  <li><b>Exportera månad</b> – CSV + (om jsPDF finns) PDF.</li>
+  <li><b>Exportera årsöversikt</b> – CSV med summeringar per månad.</li>
+</ul>
+
+<h2>Sök &amp; filtrera</h2>
+<p>
+  Via Sök-knappen i headern kan du:
+</p>
+<ul>
+  <li>Filtrera på år, projekt och fritext.</li>
+  <li>Exportera träfflistan till CSV.</li>
+</ul>
+
+<small>
+  Tidrapport v10.18 – I samarbete med ChatGPT &amp; Martin Mattsson
+</small>
+
+</body>
+</html>
