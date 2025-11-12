@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <title>Sök & filtrera – Tidrapport v10.21</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="icons/icon-192.png" />
+  <meta name="theme-color" content="#006d6f" />
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #f5f5f5;
+      color: #222;
+    }
+    .app-bar {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 12px;
+      height: 56px;
+      background: #006d6f;
+      color: #fff;
+      box-shadow: 0 2px 4px rgba(0,0,0,.25);
+    }
+    .app-bar-left { display:flex; align-items:center; gap:10px; }
+    .icon-button {
+      border:none; background:none; color:inherit; cursor:pointer;
+      font-size:22px; padding:4px;
+    }
+    .title-main { font-size:18px; font-weight:600; }
+    .sub { font-size:11px; opacity:.9; }
+    main { padding:16px; max-width:1100px; margin:0 auto 40px; }
+    .card {
+      background:#fff; border-radius:10px; padding:16px;
+      margin-bottom:16px; box-shadow:0 1px 3px rgba(0,0,0,.16);
+    }
+    label { font-size:13px; }
+    input, select {
+      width:100%; padding:8px; border-radius:6px; border:1px solid #ccc;
+      font-size:14px; box-sizing:border-box;
+    }
+    .filter-grid {
+      display:grid; grid-template-columns: 1fr 1fr; gap:8px 16px;
+      margin-bottom:10px;
+    }
+    .full { grid-column:1 / -1; }
+    .btn {
+      border:none; padding:9px 16px; border-radius:999px;
+      background:#006d6f; color:#fff; cursor:pointer;
+      font-size:14px; display:inline-flex; align-items:center; gap:6px;
+    }
+    table {
+      width:100%; border-collapse:collapse; font-size:13px;
+    }
+    th, td {
+      padding:6px 8px; border-bottom:1px solid #eee;
+      white-space:nowrap;
+    }
+    th { background:#fafafa; font-weight:600; }
+    .export-btn { margin-top:10px; }
+    @media (max-width:640px){
+      .filter-grid { grid-template-columns:1fr; }
+    }
+  </style>
+</head>
+<body>
+<header class="app-bar">
+  <div class="app-bar-left">
+    <button class="icon-button" id="backBtn">←</button>
+    <div>
+      <div class="title-main">Sök &amp; filtrera</div>
+      <div class="sub">Tidrapport v10.21</div>
+    </div>
+  </div>
+  <button class="icon-button" id="helpBtn">i</button>
+</header>
+
+<main>
+  <section class="card">
+    <div class="filter-grid">
+      <div>
+        <label for="yearSelect">År</label>
+        <select id="yearSelect"></select>
+      </div>
+      <div>
+        <label for="projectInput">Projekt</label>
+        <input id="projectInput" type="text" placeholder="t.ex. Y2406" />
+      </div>
+      <div class="full">
+        <label for="textInput">Text</label>
+        <input id="textInput" type="text" placeholder="t.ex. skola, VAB, notering..." />
+      </div>
+    </div>
+    <button id="searchBtn" class="btn">🔍 Sök</button>
+    <button id="exportSearchCsvBtn" class="btn export-btn">📄 Exportera CSV (träffar)</button>
+  </section>
+
+  <section class="card">
+    <div id="resultCount" style="margin-bottom:6px;font-size:13px;"></div>
+    <div style="overflow-x:auto;">
+      <table>
+        <thead>
+          <tr>
+            <th>Datum</th>
+            <th>Projekt</th>
+            <th>Kategori</th>
+            <th>Tid (h)</th>
+            <th>Körtid (h)</th>
+            <th>Dagboksanteckning</th>
+          </tr>
+        </thead>
+        <tbody id="resultsBody"></tbody>
+      </table>
+    </div>
+  </section>
+</main>
+
+<script src="balansregler.js"></script>
+<script src="export.js"></script>
+<script src="search.js"></script>
+</body>
+</html>
