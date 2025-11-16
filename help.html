@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<title>Hjälp – Tidrapport v10.23</title>
+
+<style>
+body{
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  line-height:1.5;
+  color:#222;
+  max-width:800px;
+  margin:2rem auto;
+  padding:0 1rem;
+}
+h1,h2,h3{color:#0e6677;}
+table{
+  border-collapse:collapse;
+  width:100%;
+  margin:1rem 0;
+  font-size:.9rem;
+}
+th,td{
+  border:1px solid #ccc;
+  padding:.4rem .6rem;
+  text-align:left;
+  vertical-align:top;
+}
+.code{
+  font-family:monospace;
+  background:#f4f4f4;
+  padding:.1rem .3rem;
+  border-radius:.2rem;
+}
+.colorbox{
+  display:inline-block;
+  width:1.5em;
+  height:1em;
+  margin-right:.3em;
+  vertical-align:middle;
+}
+.dgron{background:#dff8dd;}
+.dgul{background:#fff2cc;}
+.drod{background:#ffd6d6;}
+.dhelg{background:#eef3ff;}
+.dred{background:#ffe6e6;}
+small{color:#555;}
+</style>
+</head>
+<body>
+
+<h1>Tidrapport v10.23 – hjälp & funktioner</h1>
+<p>
+  I samarbete med ChatGPT &amp; Martin Mattsson.
+</p>
+
+<h2>Syfte</h2>
+<p>
+  Appen låter dig registrera din dag (datum, projekt, kategori &amp; timmar,
+  körtid och anteckning), se månadsvy med färgkodad status, få larm vid
+  obalans och exportera till CSV/PDF. All data ligger lokalt i webbläsaren.
+</p>
+
+<h2>Inmatning (5 rader + knappar)</h2>
+<ol>
+  <li><b>Datum</b> – välj dag. Alla balansregler utgår från detta.</li>
+  <li><b>Projekt nr</b> – t.ex. Y2506, Firman, Trello. Rensas från mellanslag och konstiga tecken.</li>
+  <li><b>Körtid (h)</b> – res/körning separat. Du kan skriva <code>1.5</code> eller <code>1,5</code>. Normeras till kvartsteg.</li>
+  <li><b>Kategori &amp; timmar</b> – en eller flera rader:
+    <ul>
+      <li>Första raden är alltid aktiv och kan inte tas bort.</li>
+      <li>Knappen <b>Lägg till kategori</b> lägger till fler rader (max en av varje kategori per inmatning).</li>
+      <li>Du kan skriva både positiva och negativa timmar, t.ex. <code>8</code>, <code>7.5</code>, <code>-2</code>.</li>
+      <li><b>Traktamente</b> är en egen kategori och räknas som <b>1 st</b>, inte timmar.</li>
+      <li>Första kategorin bär körtiden, övriga får körtid = 0.</li>
+    </ul>
+  </li>
+  <li><b>Dagboksanteckning</b> – kort vad du gjorde den dagen.</li>
+</ol>
+
+<p>
+  När du sparar skapas en eller flera rader i månaden. Samma dag kan ha
+  flera kategorirader men hör ihop via ett gemensamt ID. Vid redigering
+  hämtas de tillbaka i formuläret.
+</p>
+
+<h2>Minus-tid &amp; frånvaro</h2>
+<ul>
+  <li><b>Minus-tid</b> används för att “ta ut” sparad tid, t.ex. <code>Flextid -2h</code>.</li>
+  <li>Exempel: <b>Ordinarie 6h</b> + <b>Flextid -2h</b> + <b>ATF-tim -2h</b> kan tillsammans räknas som en full dag i balansreglerna.</li>
+  <li><b>Traktamente</b> räknas aldrig som tid, bara antal (Trakt = 1 st).</li>
+  <li><b>VAB</b>, <b>Sjuk</b>, <b>Föräldraledig</b> är frånvarokategorier och markeras som frånvaro (gul/orange) i vyerna.</li>
+  <li>Appen blockerar inmatning där <b>Ordinarie tid</b> kombineras med VAB/Sjuk/Föräldraledig i samma formulär.</li>
+</ul>
+
+<h2>Auto-backup (vid ändring)</h2>
+<p>
+  Om <b>Auto-backup (vid ändring)</b> är ikryssad i menyn sparas en snapshot
+  i din <span class="code">localStorage</span> varje gång du ändrar data
+  (lägger till, sparar, tar bort). Ingen tidsstyrd spam, bara vid ändring.
+</p>
+
+<h2>Import / Export</h2>
+<ul>
+  <li><b>Importera JSON</b> – läs in tidigare backupfil. Stöd både nya och äldre format.</li>
+  <li><b>Backup nu</b> – laddar ner en JSON med all data + inställningar just nu.</li>
+  <li><b>Exportera månad (CSV)</b> – alla rader för vald månad + summering per kategori och per projekt.</li>
+  <li><b>Exportera månad (PDF)</b> – A3 liggande med tabell (jsPDF + autoTable).</li>
+  <li><b>Exportera Årsöversikt (CSV)</b> – summering per månad (Ordinarie, Körtid, Flex, ÖT, Semester, ATF, VAB, Sjuk, FL, Trakt).</li>
+</ul>
+
+<h2>Balansregler / färger</h2>
+<p>
+  Varje dag i månadslistan färgas baserat på balansregler:
+</p>
+<ul>
+  <li><span class="colorbox dgron"></span><b>Grön</b> – dagen räknas som “komplett” (ca 8h ordinarie eller motsvarande komp-tid såsom Flex/ATF/ÖT/ Semester).</li>
+  <li><span class="colorbox dgul"></span><b>Gul</b> – under 8h registrerad tid eller ren frånvaro (VAB/Sjuk/FL).</li>
+  <li><span class="colorbox drod"></span><b>Röd</b> – vardag där det saknas registrering helt.</li>
+  <li><span class="colorbox dhelg"></span><b>Blå</b> – helg (lör/sön), markerad som info.</li>
+  <li><span class="colorbox dred"></span><b>Rosa</b> – röd dag (anges under “Egna röda dagar”).</li>
+</ul>
+
+<h3>Larm / Obalans</h3>
+<p>
+  Rutan <b>Larm / Obalans denna månad</b> visar bara dagar som har problem:
+</p>
+<ul>
+  <li><b>Röd ikon</b> – ingen registrering på vardag.</li>
+  <li><b>Gul triangel</b> – under 8h registrerad tid.</li>
+  <li><b>Orange cirkel</b> – endast frånvaro (VAB/Sjuk/Föräldraledig).</li>
+</ul>
+
+<h2>Röda dagar</h2>
+<p>
+  I menyn kan du lägga in egna röda dagar som kommaseparerad lista, t.ex:
+  <span class="code">2025-06-06, 2025-12-26</span>.<br/>
+  Med <b>Visa röda dagar</b> ikryssad markeras dessa i månadslistan och tas
+  bort från “saknas”-larmet.
+</p>
+
+<h2>Sök &amp; filtrera</h2>
+<p>
+  Knappen <b>Sök &amp; filtrera</b> (eller sök-ikonen i headern) öppnar söksidan.
+  Där kan du filtrera på år, projekt och fri text (t.ex. “Sufielundskolan”, “VAB”)
+  och exportera träffarna till CSV.
+</p>
+
+<h2>Offline / PWA</h2>
+<p>
+  Appen använder en service worker (<span class="code">sw.js</span>) så att du kan köra offline.
+  Du kan lägga till appen som ikon på mobilen (PWA). Allt sparas lokalt,
+  inget skickas iväg automatiskt.
+</p>
+
+<h2>Support / återställning</h2>
+<ul>
+  <li>Ta en <b>Backup nu</b> (JSON) innan du testar något större.</li>
+  <li>Vid problem – exportera JSON och använd den som säkerhetskopia.</li>
+  <li><b>Rensa ALL data</b> kräver att du skriver <b>RADERA ALLT</b> – annars händer inget.</li>
+</ul>
+
+<small>
+Tidrapport v10.23 – i samarbete med ChatGPT &amp; Martin Mattsson
+</small>
+
+</body>
+</html>

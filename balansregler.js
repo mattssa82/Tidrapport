@@ -1,0 +1,166 @@
+// balansregler.js
+// Tidrapport v10.23
+// i samarbete med ChatGPT & Martin Mattsson
+
+"use strict";
+
+(function(){
+
+  // Kategorier som kan motsvara hel dag om de används med t.ex. -8h (flex/komp)
+  const FULL_DAY_EQUIV = [
+    "semester",
+    "atf",
+    "atf-tim",
+    "flextid",
+    "övertid <2",
+    "övertid >2",
+    "övertid-helg",
+    "övertid helg"
+  ];
+
+  // Frånvaro
+  const ABSENCE = [
+    "vab",
+    "sjuk",
+    "sjuk-tim",
+    "föräldraledig",
+    "föräldraledighet"
+  ];
+
+  const FULL_DAY_HOURS = 8;
+
+  function classifyDayType(dateStr, settings){
+    const d = new Date(dateStr);
+    if(isNaN(d)) return "vardag";
+
+    const dow = d.getDay(); // 0=sön, 6=lör
+    if(dow===0 || dow===6) return "helg";
+
+    const redList = (settings.redDays||"")
+      .split(",")
+      .map(s=>s.trim())
+      .filter(Boolean);
+
+    if(settings.showRedDays && redList.includes(dateStr)){
+      return "röddag";
+    }
+    return "vardag";
+  }
+
+  function analyzeWorkday(rowsThisDay){
+    if(!rowsThisDay || !rowsThisDay.length){
+      return {
+        status:"saknas",
+        totalHours:0,
+        traktCount:0
+      };
+    }
+
+    let totalHours=0;
+    let ordinarieHours=0;
+    let hasFullDayEquiv=false;
+    let hasAbsenceOnly=true;
+    let traktCount=0;
+
+    rowsThisDay.forEach(r=>{
+      const h = parseFloat(r.tid)||0;
+      const cat=(r.kategori||"").toLowerCase();
+
+      if(!cat.includes("trakt")){
+        totalHours += h;
+      }
+
+      if(cat.includes("ordinarie")){
+        ordinarieHours += h;
+        hasAbsenceOnly = false;
+      }
+
+      // -8 Flextid, -8 Semester, -8 ATF etc. behandlas som hel dag
+      if(FULL_DAY_EQUIV.some(x=>cat.includes(x)) && Math.abs(h)>=FULL_DAY_HOURS){
+        hasFullDayEquiv = true;
+        hasAbsenceOnly = false;
+      }
+
+      if(cat.includes("trakt")){
+        traktCount += 1;
+      }
+
+      if(!ABSENCE.some(a=>cat.includes(a)) && !cat.includes("trakt")){
+        hasAbsenceOnly = false;
+      }
+    });
+
+    // Grön om full dag
+    if(
+      ordinarieHours>=FULL_DAY_HOURS ||
+      totalHours>=FULL_DAY_HOURS ||
+      hasFullDayEquiv
+    ){
+      return {
+        status:"grön",
+        totalHours,
+        traktCount
+      };
+    }
+
+    // Endast frånvaro = orange_absence
+    if(hasAbsenceOnly){
+      return {
+        status:"orange_absence",
+        totalHours,
+        traktCount
+      };
+    }
+
+    // Jobbat men inte full dag
+    return {
+      status:"orange_under",
+      totalHours,
+      traktCount
+    };
+  }
+
+  function buildDayStatusMap(monthRows, settings, yearNum, monthNum){
+    const byDate = {};
+    (monthRows||[]).forEach(r=>{
+      if(!r.datum) return;
+      if(!byDate[r.datum]) byDate[r.datum]=[];
+      byDate[r.datum].push(r);
+    });
+
+    const daysInMonth = new Date(yearNum, monthNum, 0).getDate();
+    const map = {};
+
+    for(let d=1; d<=daysInMonth; d++){
+      const ds = `${yearNum}-${String(monthNum).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+      const dayType = classifyDayType(ds, settings);
+
+      const rowsThisDay = byDate[ds] || [];
+      const totalH = rowsThisDay.reduce((a,b)=>a+(parseFloat(b.tid)||0),0);
+
+      if(dayType==="helg"){
+        map[ds] = {
+          status:"helg",
+          totalHours:totalH
+        };
+        continue;
+      }
+      if(dayType==="röddag"){
+        map[ds] = {
+          status:"röddag",
+          totalHours:totalH
+        };
+        continue;
+      }
+
+      map[ds] = analyzeWorkday(rowsThisDay);
+    }
+
+    return map;
+  }
+
+  window.BalansRegler = {
+    buildDayStatusMap
+  };
+
+})();
