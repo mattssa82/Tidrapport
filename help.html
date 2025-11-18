@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<title>Hjälp – Tidrapport v10.24</title>
+
+<script src="lucide.min.js"></script>
+
+<style>
+body{
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  line-height:1.5;
+  color:#222;
+  max-width:860px;
+  margin:0 auto;
+  background:#f5f7f8;
+}
+header{
+  background:#0e6677;
+  color:#fff;
+  padding:.7rem 1rem;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+header h1{
+  font-size:1rem;
+  margin:0;
+  display:flex;
+  align-items:center;
+  gap:.4rem;
+}
+header a{
+  color:#fff;
+  text-decoration:none;
+  display:inline-flex;
+  align-items:center;
+  gap:.35rem;
+  font-size:.85rem;
+}
+main{
+  padding:1rem 1rem 2rem 1rem;
+}
+h2,h3{color:#0e6677;}
+table{
+  border-collapse:collapse;
+  width:100%;
+  margin:1rem 0;
+  font-size:.9rem;
+  background:#fff;
+}
+th,td{
+  border:1px solid #ccc;
+  padding:.4rem .6rem;
+  text-align:left;
+  vertical-align:top;
+}
+.code{
+  font-family:monospace;
+  background:#f4f4f4;
+  padding:.1rem .3rem;
+  border-radius:.2rem;
+}
+.colorbox{
+  display:inline-block;
+  width:1.5em;
+  height:1em;
+  margin-right:.3em;
+  vertical-align:middle;
+}
+.dgron{background:#dff8dd;}
+.dgul{background:#fff2cc;}
+.drod{background:#ffd6d6;}
+.dhelg{background:#eef3ff;}
+.dred{background:#ffe6e6;}
+small{color:#555;}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>
+    <i data-lucide="info"></i>
+    <span>Hjälp – Tidrapport v10.24</span>
+  </h1>
+  <a href="index.html">
+    <i data-lucide="home"></i>
+    <span>Hem</span>
+  </a>
+</header>
+
+<main>
+
+<h2>Syfte</h2>
+<p>
+  Tidrapporten låter dig registrera varje arbetsdag med:
+  datum, projekt, kategorier med timmar, körtid och dagboksanteckning.
+  Du får färgkodad månadsvy, larm/obalans, årsöversikt och export till CSV/PDF.
+  All data sparas lokalt i webbläsaren.
+</p>
+
+<h2>Inmatning – fält</h2>
+<ul>
+  <li><b>Datum</b> – välj dag (klick i fältet öppnar datumväljaren).</li>
+  <li><b>Projekt nr</b> – t.ex. Y2506, Firman, Trello. Används i export och projektsummering.</li>
+  <li><b>Körtid (h)</b> – resa/körning. Kan vara t.ex. <span class="code">1,5</span> eller <span class="code">-2</span>.</li>
+  <li><b>Kategorier &amp; timmar</b> – en rad per kategori, t.ex:
+    Ordinarie tid, Flextid, ATF-tim, Övertid &lt;2, Övertid &gt;2, Övertid-Helg, Semester,
+    Sjuk, VAB, Föräldraledig, Traktamente.</li>
+  <li><b>Dagboksanteckning</b> – kort beskrivning vad du gjort.</li>
+</ul>
+
+<p>
+  Du kan ha flera kategorirader samma dag (t.ex. Ordinarie + Flextid + Traktamente),
+  men <b>inte två rader med samma kategori i samma inmatning</b>.
+</p>
+
+<h3>Ordinarie tid + frånvaro</h3>
+<ul>
+  <li><b>Ordinarie tid</b> får <b>inte</b> kombineras i samma inmatning med
+    <b>VAB</b>, <b>Sjuk</b> eller <b>Föräldraledig</b>.
+    Appen visar varning och du får lägga dem som separata rader.</li>
+</ul>
+
+<h3>Minus-tid (–) på ”bank-kategorier”</h3>
+<p>
+  Följande kategorier kan ha negativa timmar och tolkas som att du tar från
+  ”banken” och får motsvarande Ordinarie-tid i balans/export:
+</p>
+<ul>
+  <li>Flextid</li>
+  <li>ATF-tim</li>
+  <li>Övertid &lt;2</li>
+  <li>Övertid &gt;2</li>
+  <li>Övertid-Helg</li>
+  <li>Semester</li>
+</ul>
+<p>
+  Exempel: <span class="code">Flextid -2</span> betyder att du jobbar in 2h mot flexbanken.
+  I balans beräknas det som +2h Ordinarie (men exporten visar fortfarande Flextid -2).
+</p>
+
+<h2>Auto-backup &amp; reset</h2>
+<ul>
+  <li><b>input_boolean.auto_backup_vid_ändring</b> – om ikryssad skapas en snapshot i
+    <span class="code">localStorage</span> varje gång du ändrar något (lägger till, sparar, tar bort).</li>
+  <li><b>Backup nu</b> – laddar ned en JSON med all data + inställningar.</li>
+  <li><b>Rensa ALL data</b> – kräver att du skriver
+    <span class="code">RADERA ALLT</span> i en dialogruta för att kunna rensa all data.</li>
+</ul>
+
+<h2>Balansregler &amp; färger</h2>
+<p>
+  Varje dag i månadslistan får en status och bakgrundsfärg:
+</p>
+<ul>
+  <li><span class="colorbox dgron"></span><b>Grön</b> – dagen räknas som komplett
+    (ca 8h Ordinarie eller motsvarande, eller t.ex. Semester/ATF/Flex som täcker en hel dag).</li>
+  <li><span class="colorbox dgul"></span><b>Gul</b> – under 8h arbetstid eller ren frånvaro
+    (VAB / Sjuk / Föräldraledig).</li>
+  <li><span class="colorbox drod"></span><b>Röd</b> – vardag där det helt saknas registrerad tid.</li>
+  <li><span class="colorbox dhelg"></span><b>Blå</b> – helg (lör/sön).</li>
+  <li><span class="colorbox dred"></span><b>Rosa</b> – röd dag (om du lagt in datumet under
+    ”Egna röda dagar” och markerat att de ska visas).</li>
+</ul>
+
+<h3>Exempel</h3>
+<table>
+  <tr>
+    <th>Scenario</th><th>Exempel</th><th>Bedömning</th>
+  </tr>
+  <tr>
+    <td>Full arbetsdag</td>
+    <td>Ordinarie tid 8h</td>
+    <td>🟢 Grön</td>
+  </tr>
+  <tr>
+    <td>Delad dag</td>
+    <td>6h Ordinarie + 2h Flextid</td>
+    <td>🟢 Grön</td>
+  </tr>
+  <tr>
+    <td>Minus flex</td>
+    <td>Flextid -8h</td>
+    <td>🟢 Grön (räknas som motsv. 8h Ordinarie i balans)</td>
+  </tr>
+  <tr>
+    <td>Sjukdag</td>
+    <td>Sjuk 8h</td>
+    <td>🟡 Gul (frånvaro)</td>
+  </tr>
+  <tr>
+    <td>Ingen registrering</td>
+    <td>Vardag utan rad</td>
+    <td>🔴 Röd</td>
+  </tr>
+</table>
+
+<h2>Röda dagar</h2>
+<p>
+  Under <b>Inställningar</b> kan du lägga till egna röda dagar som kommaseparerad lista, t.ex:
+  <span class="code">2025-06-06, 2025-12-26</span>.
+</p>
+<ul>
+  <li>Om <b>input_boolean.visa_röda_dagar</b> är ikryssad markeras de dagarna
+    med rosa bakgrund och räknas inte som ”saknas”.</li>
+  <li>Du kan ändå registrera tid dessa dagar (t.ex. ÖT-Helg), de hamnar i exporten som vanligt.</li>
+</ul>
+
+<h2>Larm / Obalans</h2>
+<p>
+  Kortet <b>Larm / Obalans denna månad</b> visar en rad per dag där det finns varning:
+</p>
+<ul>
+  <li>🔴 <b>Ingen registrering</b> – vardag utan rad.</li>
+  <li>🟡 <b>Under 8h</b> – arbetad tid &lt; 8h.</li>
+  <li>🟡 <b>Frånvarodag</b> – VAB/Sjuk/FL (räknas inte som grön, men är inte röd).</li>
+</ul>
+<p>
+  Helg och röda dagar ger inte larm. Endast dagar som redan passerat visas i listan.
+</p>
+
+<h2>Sök &amp; filtrera</h2>
+<p>
+  Via <b>Sök</b> (i headern eller via menyn) kommer du till en sida där du kan:
+</p>
+<ul>
+  <li>Filtrera på år</li>
+  <li>Filtrera på projekt</li>
+  <li>Söka i fritext (datum, projekt, kategori, tid, körtid, anteckning)</li>
+  <li>Exportera träfflistan till CSV</li>
+</ul>
+
+<h2>Export</h2>
+<ul>
+  <li><b>Månad CSV</b> – en rad per kategori & dag, plus en projektsummering längst ned (Firman xx.xx h osv).</li>
+  <li><b>Månad PDF</b> – A3 liggande med rubriker, via jsPDF + autoTable.</li>
+  <li><b>Årsöversikt CSV</b> – summering per månad (Körtid, Ordinarie, Flex, ÖT &lt;2, ÖT &gt;2, ÖT-Helg,
+    Semester, ATF, VAB, Sjuk, Föräldraledig, Trakt).</li>
+</ul>
+
+<h2>Offline / PWA</h2>
+<p>
+  Appen använder en service worker (<span class="code">sw.js</span>) så att du kan köra offline och lägga till den
+  som app-ikon på mobilen. Allting sparas lokalt; inget skickas iväg automatiskt.
+</p>
+
+<small>
+Tidrapport v10.24 – i samarbete med ChatGPT &amp; Martin Mattsson
+</small>
+
+</main>
+
+<script>
+if(window.lucide){ lucide.createIcons(); }
+</script>
+</body>
+</html>
