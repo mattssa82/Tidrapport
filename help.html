@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<title>Hjälp – Tidrapport v10.26</title>
+
+<!-- Tidrapport v10.26 | i samarbete med ChatGPT & Martin Mattsson -->
+<script src="lucide.min.js"></script>
+
+<style>
+body{
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  line-height:1.5;
+  color:#222;
+  margin:0;
+  background:#f5f7f8;
+}
+.app-header{
+  position:sticky;
+  top:0;
+  z-index:1000;
+  background:#0e6677;
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:.6rem 1rem;
+  box-shadow:0 2px 4px rgba(0,0,0,.25);
+}
+.app-header h1{ margin:0; font-size:1.1rem; }
+.app-header .header-left{ display:flex; align-items:center; gap:.5rem; }
+.app-header button.icon-btn{
+  background:transparent;
+  border:0;
+  color:#fff;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  padding:.25rem;
+}
+.main{
+  max-width:800px;
+  margin:1.5rem auto;
+  padding:0 1rem 2rem 1rem;
+}
+h1,h2,h3{color:#0e6677;}
+table{
+  border-collapse:collapse;
+  width:100%;
+  margin:1rem 0;
+  font-size:.9rem;
+  background:#fff;
+}
+th,td{
+  border:1px solid #ccc;
+  padding:.4rem .6rem;
+  text-align:left;
+  vertical-align:top;
+}
+.code{
+  font-family:monospace;
+  background:#f4f4f4;
+  padding:.1rem .3rem;
+  border-radius:.2rem;
+}
+small{color:#555;}
+</style>
+</head>
+<body>
+
+<header class="app-header">
+  <div class="header-left">
+    <button class="icon-btn" id="homeBtn" title="Tillbaka till Tidrapport">
+      <i data-lucide="arrow-left"></i>
+    </button>
+    <h1>Hjälp – Tidrapport</h1>
+  </div>
+  <div>
+    <span style="font-size:.75rem;opacity:.8;">v10.26</span>
+  </div>
+</header>
+
+<div class="main">
+  <h2>Inmatning</h2>
+  <ul>
+    <li><b>Datum</b> – välj dag.</li>
+    <li><b>Projekt nr</b> – t.ex. <span class="code">Y2406</span>.</li>
+    <li><b>Körtid</b> – timmar. Numeriskt tangentbord. Minus/punkt kan kräva symbol-läge.</li>
+    <li><b>Kategorier</b> – en eller flera rader med kategori + tid.</li>
+    <li><b>Dagboksanteckning</b> – kort text om vad du gjort.</li>
+    <li><b>Tjänstledig (TL)</b> – frånvaro per timme, fungerar som VAB och FL.</li>
+    <li><b>Övertid &gt;2</b> och <b>Övertid-Helg</b> är separata kategorier.</li>
+  </ul>
+
+  <h2>Balansregler</h2>
+  <p>
+    Grön dag räknas när du når 8h, inklusive saldo som “hämtas” med t.ex. negativ flextid.
+    Exempel: <span class="code">Ordinarie 6h + Flextid -2h</span> blir grön.
+  </p>
+
+  <h2>Export</h2>
+  <p>
+    PDF export använder helvetica + autoTable med fasta kolumnbredder för att undvika att rubriker hoppar.
+  </p>
+
+  <small>
+    Tidrapport v10.26 – i samarbete med ChatGPT &amp; Martin Mattsson
+  </small>
+</div>
+
+<script>
+if(window.lucide){ lucide.createIcons(); }
+document.getElementById("homeBtn").addEventListener("click", () => {
+  window.location.href = "index.html";
+});
+</script>
+</body>
+</html>
